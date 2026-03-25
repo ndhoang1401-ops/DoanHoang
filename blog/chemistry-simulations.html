@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chemistry Meets Software: Interactive Simulations — DoanHoang</title>
+  <meta name="description" content="Exploring advanced chemistry concepts through code. Building interactive simulations and the future of educational software."/>
+  <meta name="author" content="DoanHoang"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .blog-article { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; color: #e8e0f0; }
+    .blog-article h1 { font-size: 48px; margin-bottom: 20px; background: linear-gradient(135deg, #ffb7c5, #c9b1ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .blog-article .meta { font-size: 14px; color: #7a6090; margin-bottom: 40px; border-bottom: 1px solid rgba(255, 183, 197, 0.1); padding-bottom: 20px; }
+    .blog-article h2 { font-size: 28px; margin: 40px 0 20px; color: #ffb7c5; }
+    .blog-article p { margin-bottom: 18px; }
+    .blog-article code { background: rgba(255, 183, 197, 0.05); padding: 2px 6px; border-radius: 3px; color: #ffb7c5; font-family: 'Space Mono', monospace; }
+    .blog-article ul, .blog-article ol { margin-left: 20px; margin-bottom: 18px; }
+    .blog-article li { margin-bottom: 8px; }
+    .blog-article a { color: #ffb7c5; text-decoration: underline; }
+    .blog-article a:hover { text-decoration: none; }
+    .blog-nav { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); }
+    .blog-nav a { display: inline-block; margin: 0 10px; padding: 10px 20px; background: rgba(255, 183, 197, 0.1); border: 1px solid rgba(255, 183, 197, 0.2); border-radius: 6px; color: #ffb7c5; text-decoration: none; }
+    .blog-nav a:hover { background: rgba(255, 183, 197, 0.2); }
+  </style>
+</head>
+<body>
+<nav id="navbar" aria-label="Main navigation" style="position: fixed; width: 100%; top: 0; left: 0; z-index: 100; background: rgba(10, 8, 18, 0.95); backdrop-filter: blur(10px); padding: 16px 0; border-bottom: 1px solid rgba(255, 183, 197, 0.1);">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="../#hero" class="nav-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
+    <a href="../#blog" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">← Back to Blog</a>
+  </div>
+</nav>
+
+<article class="blog-article" style="margin-top: 100px;">
+  <h1>Chemistry Meets Software: Interactive Simulations</h1>
+  
+  <div class="meta">
+    <time>Mar 1, 2024</time> • 7 min read • Science & Technology
+  </div>
+
+  <p>One of my favorite projects has been exploring the intersection of chemistry and software—specifically, building interactive simulations that help visualize complex molecular interactions. This article dives into that journey and where I think the future of science education is headed.</p>
+
+  <h2>Why Chemistry Matters in Tech</h2>
+  <p>Chemistry is often overlooked in tech circles, but it's the foundation of innovation:</p>
+  <ul>
+    <li><strong>Battery Technology:</strong> Understanding lithium-ion chemistry is crucial for better devices</li>
+    <li><strong>Drugs &amp; Medicine:</strong> Computational chemistry accelerates drug discovery</li>
+    <li><strong>Materials Science:</strong> New materials emerge from understanding atomic interactions</li>
+    <li><strong>Climate Tech:</strong> Carbon capture and renewable energy rely on chemistry</li>
+  </ul>
+  
+  <p>But here's the problem: traditional chemistry education is stuck in the past. Students memorize formulas without understanding why atoms bond the way they do.</p>
+
+  <h2>The Power of Visualization</h2>
+  <p>Most people can't visualize molecular structures in 3D. We lack the intuition. That's where software comes in.</p>
+  
+  <p>A few years ago, I built a simple Three.js simulation showing molecular orbital interactions. With just a few hundred lines of JavaScript, I could visualize:</p>
+  <ul>
+    <li>Electron probability clouds</li>
+    <li>Bond formation between atoms</li>
+    <li>Energy level transitions</li>
+    <li>Reaction pathways in real-time</li>
+  </ul>
+
+  <p>The feedback was incredible. Students who struggled with abstract concepts suddenly "got it" by seeing electrons move in 3D space.</p>
+
+  <h2>Building Your First Chemistry Simulation</h2>
+  <p>Here's the basic approach:</p>
+  
+  <h3>1. Physical Accuracy</h3>
+  <p>Model the actual physics: Coulomb's law for electron-nucleus interactions, angular momentum, quantum uncertainty. Libraries like <code>three.js</code> and <code>babylon.js</code> handle rendering; you implement physics.</p>
+
+  <h3>2. Interactivity</h3>
+  <p>Let users manipulate the system: adjust temperature, change atomic number, trigger reactions. Interactive education is far more effective than passive observation.</p>
+
+  <h3>3. Real-time Computation</h3>
+  <p>Use WebGL and GPU computation for fast physics updates. Simulating thousands of particles at 60fps requires optimization, but it's possible with modern browsers.</p>
+
+  <h3>4. Visual Feedback</h3>
+  <p>Color-code by energy level, use particle trails to show paths, highlight important interactions. Good visualization is half the learning.</p>
+
+  <h2>Current Projects</h2>
+  <p>I'm actively working on several simulations:</p>
+
+  <h3>Molecular Orbital Simulator</h3>
+  <p>Visualizes how electrons fill orbitals as atomic number increases. Users can:</p>
+  <ul>
+    <li>Scrub through the periodic table</li>
+    <li>See electron configurations change</li>
+    <li>View orbital shapes (s, p, d, f)</li>
+    <li>Understand reactivity patterns</li>
+  </ul>
+
+  <h3>Reaction Kinetics Simulator</h3>
+  <p>Shows how temperature and concentration affect reaction rates:</p>
+  <ul>
+    <li>Particles move with thermal velocity</li>
+    <li>Collisions may or may not result in reaction</li>
+    <li>Activation energy visualized</li>
+    <li>Real-time graph of concentration over time</li>
+  </ul>
+
+  <h3>Protein Folding Visualizer</h3>
+  <p>An ongoing project exploring how amino acid sequences fold into 3D structures. Uses:</p>
+  <ul>
+    <li>Actual protein data from PDB</li>
+    <li>Interactive rotation and inspection</li>
+    <li>Highlighting of active sites</li>
+    <li>Mutation viewer (see how SNPs affect folding)</li>
+  </ul>
+
+  <h2>The Challenges</h2>
+  
+  <h3>Performance</h3>
+  <p>Simulating thousands of particles with realistic physics is computationally expensive. Solutions: use WebWorkers for off-thread computation, implement LOD (level-of-detail), cache calculations.</p>
+
+  <h3>Accuracy vs. Simplicity</h3>
+  <p>Adding quantum effects improves accuracy but reduces visual clarity. We found a sweet spot: accurate enough to teach real concepts, simple enough to stay interactive.</p>
+
+  <h3>Scientific Validation</h3>
+  <p>Partnering with actual chemists ensures our simulations teach correct concepts. It's easy to build something pretty that's scientifically wrong.</p>
+
+  <h2>The Future of Science Education</h2>
+  <p>I firmly believe the future of STEM education is interactive, visual, and accessible. Consider:</p>
+  
+  <ul>
+    <li><strong>Virtual Labs:</strong> Why dissect frogs in high school when you can explore molecular interactions on your phone?</li>
+    <li><strong>AR Chemistry:</strong> Point your phone at a test tube and see molecular structures rendered in real space</li>
+    <li><strong>Collaborative Simulations:</strong> Multiple students building molecules in shared 3D space</li>
+    <li><strong>AI-Driven Learning:</strong> Simulations that adapt difficulty based on student understanding</li>
+  </ul>
+
+  <h2>Getting Started</h2>
+  <p>If you're interested in building chemistry simulations:</p>
+  
+  <ol>
+    <li><strong>Learn Three.js or Babylon.js</strong> for 3D rendering</li>
+    <li><strong>Study Newton's laws and basic physics</strong> — you don't need quantum mechanics to start</li>
+    <li><strong>Find a chemistry dataset</strong> — PubChem, ChemSpider have free APIs</li>
+    <li><strong>Start small:</strong> Visualize molecular structures before simulating interactions</li>
+    <li><strong>Get feedback from chemists</strong> — accuracy matters</li>
+  </ol>
+
+  <h2>Open Source Opportunities</h2>
+  <p>The intersection of chemistry and software is wide open. Need help?</p>
+  
+  <ul>
+    <li><strong>Visualization Libraries:</strong> Open-source tools for molecular rendering</li>
+    <li><strong>Educational Platforms:</strong> Interactive courseware for chemistry learners</li>
+    <li><strong>Research Tools:</strong> Simulations for material science research</li>
+    <li><strong>VR Chemistry:</strong> Immersive lab experiences in virtual reality</li>
+  </ul>
+
+  <h2>Closing Thoughts</h2>
+  <p>Combining chemistry with software isn't just academically interesting — <strong>it's where innovation happens.</strong> The next generation of batteries, drugs, and materials will be developed by people who understand both the science and the software.</p>
+
+  <p>If you're passionate about both fields, this is your moment. The tools are better than ever, the need is critical, and the possibilities are endless.</p>
+
+  <div class="blog-nav">
+    <a href="../#blog">← Back to Blog</a>
+    <a href="../#contact">Get in Touch →</a>
+  </div>
+</article>
+
+<footer role="contentinfo" style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); margin-top: 80px; color: #7a6090;">
+  <p>© 2024 DoanHoang · Made with <i class="fa-solid fa-heart" style="color: #ffb7c5;"></i></p>
+</footer>
+
+<script src="../js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Building skr-hub: From Idea to Launch in 30 Days — DoanHoang</title>
+  <meta name="description" content="Lessons learned shipping a full-stack portfolio platform with React, Node.js, and Three.js. Performance optimizations, deployment challenges, and more."/>
+  <meta name="author" content="DoanHoang"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .blog-article { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; color: #e8e0f0; }
+    .blog-article h1 { font-size: 48px; margin-bottom: 20px; background: linear-gradient(135deg, #ffb7c5, #c9b1ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .blog-article .meta { font-size: 14px; color: #7a6090; margin-bottom: 40px; border-bottom: 1px solid rgba(255, 183, 197, 0.1); padding-bottom: 20px; }
+    .blog-article h2 { font-size: 28px; margin: 40px 0 20px; color: #ffb7c5; }
+    .blog-article p { margin-bottom: 18px; }
+    .blog-article code { background: rgba(255, 183, 197, 0.05); padding: 2px 6px; border-radius: 3px; color: #ffb7c5; font-family: 'Space Mono', monospace; }
+    .blog-article ul, .blog-article ol { margin-left: 20px; margin-bottom: 18px; }
+    .blog-article li { margin-bottom: 8px; }
+    .blog-article a { color: #ffb7c5; text-decoration: underline; }
+    .blog-article a:hover { text-decoration: none; }
+    .blog-nav { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); }
+    .blog-nav a { display: inline-block; margin: 0 10px; padding: 10px 20px; background: rgba(255, 183, 197, 0.1); border: 1px solid rgba(255, 183, 197, 0.2); border-radius: 6px; color: #ffb7c5; text-decoration: none; }
+    .blog-nav a:hover { background: rgba(255, 183, 197, 0.2); }
+  </style>
+</head>
+<body>
+<nav id="navbar" aria-label="Main navigation" style="position: fixed; width: 100%; top: 0; left: 0; z-index: 100; background: rgba(10, 8, 18, 0.95); backdrop-filter: blur(10px); padding: 16px 0; border-bottom: 1px solid rgba(255, 183, 197, 0.1);">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+    <a href="../#hero" class="nav-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
+    <a href="../#blog" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">← Back to Blog</a>
+  </div>
+</nav>
+
+<article class="blog-article" style="margin-top: 100px;">
+  <h1>Building skr-hub: From Idea to Launch in 30 Days</h1>
+  
+  <div class="meta">
+    <time>Jan 15, 2024</time> • 8 min read • Full-Stack Development
+  </div>
+
+  <p>30 days. That's all it took to go from a blank repository to a fully functional, deployed full-stack portfolio platform. This is the story of <strong>skr-hub</strong> — how we built it, what we learned, and the challenges we faced.</p>
+
+  <h2>The Motivation</h2>
+  <p>I needed a portfolio that could showcase my work while demonstrating my technical skills in real-time. Not just a static website, but a living, breathing application that could handle:</p>
+  <ul>
+    <li>Complex animations and visual effects (Three.js particles)</li>
+    <li>Real-time data fetching (GitHub API integration)</li>
+    <li>Form handling and email notifications</li>
+    <li>Multiple theme support</li>
+    <li>Lighthouse performance targets (95+)</li>
+  </ul>
+
+  <h2>The Tech Stack</h2>
+  <p>We chose a modern, proven tech stack:</p>
+  <ul>
+    <li><strong>Frontend:</strong> React with GSAP for animations</li>
+    <li><strong>Backend:</strong> Node.js with Express for API routes</li>
+    <li><strong>Database:</strong> MongoDB for flexible data storage</li>
+    <li><strong>3D Graphics:</strong> Three.js for particle effects</li>
+    <li><strong>Deployment:</strong> Render for serverless hosting</li>
+    <li><strong>Email:</strong> EmailJS for contact form submissions</li>
+  </ul>
+
+  <h2>Week 1: Planning &amp; Setup</h2>
+  <p>The first week was all about planning. We created wireframes, defined the project structure, and set up the development environment. Key decisions made:</p>
+  <ul>
+    <li>Monorepo structure for client and server</li>
+    <li>Environmental variables for API keys and secrets</li>
+    <li>Git workflow with feature branches</li>
+    <li>CI/CD pipeline with GitHub Actions</li>
+  </ul>
+
+  <h2>Week 2: Frontend Development</h2>
+  <p>With the foundation in place, we moved to building the UI components:</p>
+  <ul>
+    <li>Created reusable React components (Hero, ProjectCard, SkillBar)</li>
+    <li>Implemented GSAP animations for smooth transitions</li>
+    <li>Built the Three.js particle field from scratch</li>
+    <li>Designed the glassmorphism UI with CSS modules</li>
+  </ul>
+  <p>One major challenge: Three.js performance. We had to optimize particle count based on device capabilities, reducing from 2000 particles on desktop to 600 on mobile.</p>
+
+  <h2>Week 3: Backend &amp; Integration</h2>
+  <p>The backend was critical for real-time features:</p>
+  <ul>
+    <li>Built REST API endpoints for project data and stats</li>
+    <li>Integrated GitHub API to fetch repository stars and commits</li>
+    <li>Set up EmailJS for contact form notifications</li>
+    <li>Added error handling and request validation</li>
+  </ul>
+  <p>Performance was a concern from day one. We implemented caching strategies and lazy-loading to keep API response times under 100ms.</p>
+
+  <h2>Week 4: Optimization &amp; Deployment</h2>
+  <p>The final week was all about optimization and getting live:</p>
+  <ul>
+    <li>Lighthouse audit: achieved 95+ scores across all metrics</li>
+    <li>Image optimization with WebP format</li>
+    <li>Code splitting to reduce bundle size</li>
+    <li>Service worker implementation for offline support</li>
+    <li>Deployed to Render with automatic CI/CD</li>
+  </ul>
+
+  <h2>Key Learnings</h2>
+  <p><strong>Performance is a feature.</strong> Users notice fast websites. We obsessed over load times and achieved sub-2s first paint through aggressive optimization.</p>
+  
+  <p><strong>Mobile-first matters.</strong> Building for mobile constraints (smaller GPU, limited bandwidth) forced better decisions for desktop as well.</p>
+  
+  <p><strong>Animations aren't free.</strong> Every animation must justify its existence. We cut animations that didn't add value, even if they looked cool.</p>
+  
+  <p><strong>APIs are real bottlenecks.</strong> GitHub API rate limits and latency were more challenging than expected. Caching became critical.</p>
+
+  <h2>Deployment Strategy</h2>
+  <p>We chose Render for its simplicity and automatic deployments from Git. The workflow:</p>
+  <ol>
+    <li>Push code to main branch</li>
+    <li>GitHub Actions run tests</li>
+    <li>Render automatically builds and deploys</li>
+    <li>Service worker updates on next visit</li>
+  </ol>
+
+  <h2>Metrics</h2>
+  <p>After 30 days, here's what we achieved:</p>
+  <ul>
+    <li>Lighthouse Score: 95/100 🚀</li>
+    <li>First Contentful Paint: 1.2s</li>
+    <li>Time to Interactive: 2.8s</li>
+    <li>Bundle Size: 145KB (gzipped)</li>
+    <li>Mobile Performance: 90+</li>
+  </ul>
+
+  <h2>Conclusion</h2>
+  <p>Building skr-hub in 30 days taught me that constraints breed innovation. By focusing on what matters (performance, UX, code quality), we shipped a product we're genuinely proud of.</p>
+  
+  <p>Next steps? We're planning to add a blog CMS, project filtering, and a contact form backend. But the foundation is solid, and the journey doesn't end here.</p>
+
+  <div class="blog-nav">
+    <a href="../#blog">← Back to Blog</a>
+    <a href="../#contact">Get in Touch →</a>
+  </div>
+</article>
+
+<footer role="contentinfo" style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); margin-top: 80px; color: #7a6090;">
+  <p>© 2024 DoanHoang · Made with <i class="fa-solid fa-heart" style="color: #ffb7c5;"></i></p>
+</footer>
+
+<script src="../js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DoanHoang — Software Engineer · Vietnam</title>
+  <meta name="description" content="DoanHoang — Software Engineer from Vietnam 🇻🇳. React, Node.js, Three.js. No talk. Just build."/>
+  <meta name="author" content="DoanHoang"/>
+  <meta property="og:title" content="DoanHoang — Software Engineer"/>
+  <meta property="og:image" content="https://ndhoang1401-ops.github.io/assets/og-image.jpg"/>
+  <meta name="theme-color" content="#0a0812"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="alternate" hreflang="en" href="https://ndhoang1401-ops.github.io/"/>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <style>
+    :root{--bg:#0a0812;--pink:#ffb7c5;--purple:#c9b1ff}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:#e8e0f0;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
+    .loader{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center}
+    .loader-content{text-align:center}
+    .loader-logo{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:28px}
+    .loader-track{width:220px;height:2px;background:#1e1530;border-radius:2px;margin:0 auto 12px;overflow:hidden}
+    .loader-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));width:0%;border-radius:2px}
+    .loader-pct{display:block;font-size:11px;color:#7a6090;letter-spacing:4px}
+    .logo-bracket{color:var(--pink)}
+    .cursor,.cursor-follower{position:fixed;pointer-events:none;transform:translate(-50%,-50%)}
+    .cursor{width:8px;height:8px;background:var(--pink);border-radius:50%;z-index:9999;mix-blend-mode:difference}
+    .cursor-follower{width:40px;height:40px;color:rgba(255,183,197,.4);z-index:9998}
+    .cursor-follower svg{width:100%;height:100%}
+    .skip-link{position:absolute;top:-40px;left:8px;background:var(--pink);color:#0a0812;padding:8px 16px;font-size:12px;border-radius:0 0 8px 8px;z-index:20000;font-weight:700;transition:top .3s}
+    .skip-link:focus{top:0}
+    :focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" media="print" onload="this.media='all'"/>
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"/>
+  </noscript>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js" defer></script>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"DoanHoang","url":"https://ndhoang1401-ops.github.io/","email":"doanhoang.4work@gmail.com","jobTitle":"Software Engineer","nationality":"Vietnamese","sameAs":["https://github.com/ndhoang1401-ops"]}</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');window.track=(a,c,l)=>gtag('event',a,{event_category:c,event_label:l});</script>
+  <script>if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</head>
+<body>
+<a href="#hero" class="skip-link" tabindex="1">Skip to content</a>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-follower" id="cursor-follower" aria-hidden="true">
+  <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+</div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="loader-content">
+    <div class="loader-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></div>
+    <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+    <span class="loader-pct" id="loader-pct">0%</span>
+  </div>
+</div>
+
+<!-- Theme toggle -->
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+  <i class="fa-solid fa-sun" id="theme-icon" aria-hidden="true"></i>
+</button>
+
+<!-- Scroll progress -->
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<!-- Navbar — pill centered top -->
+<nav id="navbar" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero"         class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#case-studies">Case Studies</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="mailto:doanhoang.4work@gmail.com" class="nav-cta">
+      <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Hire me
+    </a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="#hero"         class="mobile-link">Home</a></li>
+    <li><a href="#about"        class="mobile-link">About</a></li>
+    <li><a href="#skills"       class="mobile-link">Skills</a></li>
+    <li><a href="#projects"     class="mobile-link">Projects</a></li>
+    <li><a href="#case-studies" class="mobile-link">Case Studies</a></li>
+    <li><a href="#blog"         class="mobile-link">Blog</a></li>
+    <li><a href="#tools"        class="mobile-link">Tools</a></li>
+    <li><a href="#testimonials" class="mobile-link">Reviews</a></li>
+    <li><a href="#contact"      class="mobile-link">Contact</a></li>
+  </ul>
+</div>
+
+<main>
+
+<!-- ══ HERO ══ -->
+<section id="hero" aria-label="Hero">
+  <canvas id="three-canvas" aria-hidden="true"></canvas>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div id="sakura-container" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span>Available for opportunities</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="title-block">Doan</span>
+      <span class="title-block title-outline">Hoang</span>
+    </h1>
+    <div class="hero-role" aria-live="polite">
+      <span>I'm a&nbsp;</span>
+      <span id="typed" class="role-typed"></span>
+      <span class="type-cursor" aria-hidden="true">|</span>
+    </div>
+    <p class="hero-desc">Building things with code &amp; passion.<br/>No talk. Just build. 🌸</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary magnetic"><span>View Projects</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="#contact"  class="btn btn-ghost magnetic"><span>Let's Talk</span></a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://github.com/ndhoang1401-ops"    target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://fb.com/huwang212"               target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+      <a href="https://instagram.com/hoa_ng1401"       target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@doanhoangytb"  target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      <a href="https://discord.gg/NSRndXR8Gz"           target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+    </div>
+  </div>
+
+  <!-- FIX 1: Hero card with anime.gif -->
+  <div class="hero-visual">
+    <div class="glass-card hero-card">
+      <div class="hero-anime-wrap">
+        <img src="assets/anime.webp" alt="" class="hero-anime-gif" loading="lazy" decoding="async"
+             onerror="this.style.display='none';document.querySelector('.hero-avatar').style.display='flex'"/>
+      </div>
+      <div class="hero-avatar" style="display:none">
+        <div class="avatar-spin"></div>
+        <div class="avatar-core"><i class="fa-solid fa-code"></i></div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-val" data-count="3">0</span><sup>+</sup><p>Years</p></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-val" data-count="10">0</span><sup>+</sup><p>Projects</p></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-val" id="github-stars">0</span><sup>+</sup><p>⭐ Stars</p></div>
+      </div>
+      <div class="float-tags">
+        <span class="ftag" style="--d:0s"><i class="devicon-react-original colored"></i> React</span>
+        <span class="ftag" style="--d:.4s"><i class="devicon-nodejs-plain colored"></i> Node</span>
+        <span class="ftag" style="--d:.8s"><i class="devicon-python-plain colored"></i> Python</span>
+        <span class="ftag" style="--d:1.2s"><i class="devicon-cplusplus-plain colored"></i> C++</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about" aria-label="About me">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">About <em>Me</em></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="about-grid">
+      <!-- FIX 2: anime2 in the portrait card, badges floating -->
+      <div class="about-left reveal">
+        <div class="about-portrait-wrap">
+          <div class="about-portrait glass-card">
+            <img src="assets/anime2.webp" alt="" loading="lazy" decoding="async" onerror="this.src='assets/anime.webp'"/>
+          </div>
+          <div class="about-flbadge ab-loc glass-card">
+            <i class="fa-solid fa-location-dot" style="color:var(--pink)"></i> Vietnam 🇻🇳
+          </div>
+          <div class="about-flbadge ab-work glass-card">
+            <span class="ab-dot"></span> Open to work
+          </div>
+          <div class="about-flbadge ab-years glass-card">
+            <span class="ab-num">3+</span>
+            <span class="ab-lbl">Years Coding</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-right reveal">
+        <p class="about-bio">Hi, I'm <strong>DoanHoang</strong> — a self-taught software engineer from <strong>Vietnam 🇻🇳</strong>. Started coding in 2023 out of pure curiosity, now building full-stack products that people actually use.</p>
+        <p class="about-bio">Beyond the keyboard, I train <strong>Calisthenics</strong> every single day — pull-ups, muscle-ups, handstands, L-sits. Started from zero in 2023, hit advanced moves by 2025. Same mindset applies: <em>consistency beats talent.</em></p>
+        <p class="about-bio">Also exploring <strong>Advanced Chemistry</strong> and <strong>System Design</strong> — where science meets software.</p>
+
+        <div class="timeline" role="list">
+          <div class="tl-item" role="listitem">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <time class="tl-year" datetime="2025">2025 — 2026</time>
+              <h3>Software Engineer</h3>
+              <p>Full-stack apps: React, Node.js, PostgreSQL. Shipped skr-hub &amp; this portfolio. Lighthouse 95+.</p>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <time class="tl-year" datetime="2024">2024</time>
+              <h3>Frontend Dev + Calisthenics Year 2</h3>
+              <p>GSAP · Three.js · Glassmorphism. First muscle-up unlocked. Reps in code = reps in training.</p>
+            </div>
+          </div>
+          <div class="tl-item" role="listitem">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <time class="tl-year" datetime="2023">2023</time>
+              <h3>Day 1 — Code &amp; Calisthenics</h3>
+              <p>Started JS, Python, C++ from zero. Also started calisthenics: couldn't do 5 pull-ups. Both journeys began the same day.</p>
+            </div>
+          </div>
+        </div>
+
+        <a href="assets/DoanHoang-CV.pdf" download="DoanHoang-CV.pdf" class="btn btn-primary">
+          <i class="fa-solid fa-download" aria-hidden="true"></i> <span>Download CV</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SKILLS ══ -->
+<section id="skills" class="alt-bg" aria-label="Tech stack">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Tech <em>Stack</em></h2>
+      <div class="sec-line"></div>
+    </div>
+
+    <!-- FIX 3: avatar + tabs at TOP, grid below -->
+    <div class="skills-top-bar reveal">
+      <div class="skills-top-avatar">
+        <img src="assets/anime3.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"/>
+      </div>
+      <div class="skills-tabs" role="tablist">
+        <button class="tab active" data-tab="lang"  role="tab" aria-selected="true"  aria-controls="tab-lang">Languages</button>
+        <button class="tab"        data-tab="fw"    role="tab" aria-selected="false" aria-controls="tab-fw">Frameworks</button>
+        <button class="tab"        data-tab="tools" role="tab" aria-selected="false" aria-controls="tab-tools">Tools</button>
+      </div>
+    </div>
+
+    <div id="tab-lang" class="tab-panel active" role="tabpanel">
+      <div class="skills-grid">
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-javascript-plain colored"></i></div><span class="skill-name">JavaScript</span><div class="skill-bar"><div class="skill-fill" style="--lv:90%"></div></div><span class="skill-pct">90%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-python-plain colored"></i></div><span class="skill-name">Python</span><div class="skill-bar"><div class="skill-fill" style="--lv:78%"></div></div><span class="skill-pct">78%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-cplusplus-plain colored"></i></div><span class="skill-name">C++</span><div class="skill-bar"><div class="skill-fill" style="--lv:72%"></div></div><span class="skill-pct">72%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-html5-plain colored"></i></div><span class="skill-name">HTML5</span><div class="skill-bar"><div class="skill-fill" style="--lv:88%"></div></div><span class="skill-pct">88%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-css3-plain colored"></i></div><span class="skill-name">CSS3</span><div class="skill-bar"><div class="skill-fill" style="--lv:82%"></div></div><span class="skill-pct">82%</span></div>
+      </div>
+    </div>
+    <div id="tab-fw" class="tab-panel" role="tabpanel">
+      <div class="skills-grid">
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-react-original colored"></i></div><span class="skill-name">React</span><div class="skill-bar"><div class="skill-fill" style="--lv:85%"></div></div><span class="skill-pct">85%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-nodejs-plain colored"></i></div><span class="skill-name">Node.js</span><div class="skill-bar"><div class="skill-fill" style="--lv:80%"></div></div><span class="skill-pct">80%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-electron-original colored"></i></div><span class="skill-name">Electron</span><div class="skill-bar"><div class="skill-fill" style="--lv:65%"></div></div><span class="skill-pct">65%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-postgresql-plain colored"></i></div><span class="skill-name">PostgreSQL</span><div class="skill-bar"><div class="skill-fill" style="--lv:74%"></div></div><span class="skill-pct">74%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-mysql-plain colored"></i></div><span class="skill-name">MySQL</span><div class="skill-bar"><div class="skill-fill" style="--lv:70%"></div></div><span class="skill-pct">70%</span></div>
+      </div>
+    </div>
+    <div id="tab-tools" class="tab-panel" role="tabpanel">
+      <div class="skills-grid">
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-git-plain colored"></i></div><span class="skill-name">Git</span><div class="skill-bar"><div class="skill-fill" style="--lv:88%"></div></div><span class="skill-pct">88%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-linux-plain colored"></i></div><span class="skill-name">Linux</span><div class="skill-bar"><div class="skill-fill" style="--lv:76%"></div></div><span class="skill-pct">76%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-unity-plain colored"></i></div><span class="skill-name">Unity</span><div class="skill-bar"><div class="skill-fill" style="--lv:65%"></div></div><span class="skill-pct">65%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-blender-original colored"></i></div><span class="skill-name">Blender</span><div class="skill-bar"><div class="skill-fill" style="--lv:60%"></div></div><span class="skill-pct">60%</span></div>
+        <div class="skill-card glass-card reveal"><div class="skill-ico"><i class="devicon-android-plain colored"></i></div><span class="skill-name">Android</span><div class="skill-bar"><div class="skill-fill" style="--lv:68%"></div></div><span class="skill-pct">68%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects" aria-label="Projects">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">My <em>Projects</em></h2>
+      <div class="sec-line"></div>
+    </div>
+    <!-- FIX 4: No filter, all visible, proper grid -->
+    <div class="projects-grid" role="list">
+      <article class="proj-card glass-card reveal featured" role="listitem">
+        <div class="proj-card-inner">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#1e1030,#0d1830)">
+            <div class="proj-thumb-dots"><span></span><span></span><span></span></div>
+            <div class="proj-thumb-body"><i class="fa-solid fa-globe"></i><span>skr-hub.onrender.com</span></div>
+            <div class="proj-overlay">
+              <a href="https://skr-hub.onrender.com/" target="_blank" rel="noopener noreferrer" class="ol-btn"><i class="fa-solid fa-up-right-from-square"></i> Live</a>
+              <a href="https://github.com/ndhoang1401-ops/skr-hub" target="_blank" rel="noopener noreferrer" class="ol-btn"><i class="fa-brands fa-github"></i> Code</a>
+            </div>
+          </div>
+          <div class="proj-body">
+            <div class="proj-top"><span class="proj-idx">01</span><span class="proj-badge"><i class="fa-solid fa-star"></i> Featured</span></div>
+            <h3 class="proj-name">skr-hub</h3>
+            <p class="proj-desc">Portfolio &amp; creative hub — responsive showcase with glassmorphism UI, EmailJS, Three.js particles and live deployment.</p>
+            <div class="proj-tech">
+              <i class="devicon-react-original colored" title="React"></i>
+              <i class="devicon-nodejs-plain colored" title="Node.js"></i>
+              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+              <i class="devicon-css3-plain colored" title="CSS3"></i>
+            </div>
+            <div class="proj-links">
+              <a href="https://skr-hub.onrender.com/" target="_blank" rel="noopener noreferrer" class="proj-btn primary"><i class="fa-solid fa-up-right-from-square"></i> Live Demo</a>
+              <a href="https://github.com/ndhoang1401-ops/skr-hub" target="_blank" rel="noopener noreferrer" class="proj-btn ghost"><i class="fa-brands fa-github"></i> Source</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card glass-card reveal" role="listitem">
+        <div class="proj-card-inner">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#0d1e10,#0a1a28)">
+            <div class="proj-thumb-dots"><span></span><span></span><span></span></div>
+            <div class="proj-thumb-body"><i class="fa-solid fa-code"></i><span>Portfolio v2</span></div>
+            <div class="proj-overlay">
+              <a href="https://github.com/ndhoang1401-ops/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="ol-btn"><i class="fa-brands fa-github"></i> Code</a>
+            </div>
+          </div>
+          <div class="proj-body">
+            <span class="proj-idx">02</span>
+            <h3 class="proj-name">Portfolio v2</h3>
+            <p class="proj-desc">This site — vanilla HTML/CSS/JS, Lighthouse 95+, PWA, WCAG AA, shared RAF loop, Three.js &amp; GSAP.</p>
+            <div class="proj-tech">
+              <i class="devicon-html5-plain colored" title="HTML5"></i>
+              <i class="devicon-css3-plain colored" title="CSS3"></i>
+              <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/ndhoang1401-ops/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="proj-btn ghost"><i class="fa-brands fa-github"></i> Source</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card glass-card reveal" role="listitem">
+        <div class="proj-card-inner">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#1a0820,#0d1020)">
+            <div class="proj-thumb-dots"><span></span><span></span><span></span></div>
+            <div class="proj-thumb-body"><i class="fa-solid fa-gamepad"></i><span>Coming Soon</span></div>
+            <div class="proj-overlay">
+              <a href="https://github.com/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="ol-btn"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+          </div>
+          <div class="proj-body">
+            <span class="proj-idx">03</span>
+            <h3 class="proj-name">Coming Soon 🌸</h3>
+            <p class="proj-desc">Next project in progress — combining chemistry knowledge with interactive software. Stay tuned.</p>
+            <div class="proj-tech">
+              <i class="devicon-python-plain colored" title="Python"></i>
+              <i class="devicon-cplusplus-plain colored" title="C++"></i>
+              <i class="devicon-unity-plain colored" title="Unity"></i>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="proj-btn ghost"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CASE STUDIES ══ -->
+
+<section id="case-studies" aria-label="Case Studies">
+
+  <div class="container">
+
+    <div class="sec-head reveal">
+
+      <span class="sec-num">04</span>
+
+      <h2 class="sec-title">Case <em>Studies</em></h2>
+
+      <div class="sec-line"></div>
+
+    </div>
+
+    <div class="case-studies-grid" role="list">
+
+      <article class="case-card glass-card reveal featured" role="listitem">
+
+        <div class="case-header">
+
+          <div class="case-idx">01</div>
+
+          <div class="case-badge"><i class="fa-solid fa-star"></i> Featured Case</div>
+
+        </div>
+
+        <h3 class="case-name">skr-hub: Full-Stack Portfolio Platform</h3>
+
+        <div class="case-problem">
+
+          <h4>Problem</h4>
+
+          <p>Needed a modern, performant portfolio that showcases skills, integrates contact forms, and provides a unique user experience.</p>
+
+        </div>
+
+        <div class="case-solution">
+
+          <h4>Solution</h4>
+
+          <p>Built with React, Node.js, Three.js, GSAP, and glassmorphism design. Achieved Lighthouse 95+ scores.</p>
+
+        </div>
+
+        <div class="case-impact">
+
+          <h4>Impact</h4>
+
+          <p>Fast loading, engaging animations, and seamless contact integration. Deployed on Render with PWA support.</p>
+
+        </div>
+
+        <div class="case-tech">
+
+          <i class="devicon-react-original colored" title="React"></i>
+
+          <i class="devicon-nodejs-plain colored" title="Node.js"></i>
+
+          <i class="devicon-threejs-original colored" title="Three.js"></i>
+
+          <i class="devicon-gsap-plain colored" title="GSAP"></i>
+
+        </div>
+
+        <div class="case-links">
+
+          <a href="https://skr-hub.onrender.com/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Live Demo</a>
+
+          <a href="https://github.com/ndhoang1401-ops/skr-hub" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Source Code</a>
+
+        </div>
+
+      </article>
+
+      <article class="case-card glass-card reveal" role="listitem">
+
+        <div class="case-header">
+
+          <div class="case-idx">02</div>
+
+        </div>
+
+        <h3 class="case-name">Portfolio v2: Vanilla JS Masterpiece</h3>
+
+        <div class="case-problem">
+
+          <h4>Problem</h4>
+
+          <p>Create a lightweight, accessible portfolio without frameworks, achieving high performance and PWA features.</p>
+
+        </div>
+
+        <div class="case-solution">
+
+          <h4>Solution</h4>
+
+          <p>Vanilla HTML/CSS/JS with Three.js particles, GSAP animations, and custom cursor. WCAG AA compliant.</p>
+
+        </div>
+
+        <div class="case-impact">
+
+          <h4>Impact</h4>
+
+          <p>Lighthouse 95+, PWA ready, fast loading under 2s. Showcases advanced vanilla JS skills.</p>
+
+        </div>
+
+        <div class="case-tech">
+
+          <i class="devicon-html5-plain colored" title="HTML5"></i>
+
+          <i class="devicon-css3-plain colored" title="CSS3"></i>
+
+          <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+
+          <i class="devicon-threejs-original colored" title="Three.js"></i>
+
+        </div>
+
+        <div class="case-links">
+
+          <a href="https://github.com/ndhoang1401-ops/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Source Code</a>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ══ BLOG ══ -->
+
+<section id="blog" class="alt-bg" aria-label="Blog">
+
+  <div class="container">
+
+    <div class="sec-head reveal">
+
+      <span class="sec-num">05</span>
+
+      <h2 class="sec-title">Blog & <em>Insights</em></h2>
+
+      <div class="sec-line"></div>
+
+    </div>
+
+    <div class="blog-grid">
+
+      <article class="blog-post glass-card reveal">
+
+        <div class="blog-thumb">
+
+          <img src="assets/blog1.webp" alt="Building skr-hub" loading="lazy" decoding="async">
+
+        </div>
+
+        <div class="blog-content">
+
+          <div class="blog-meta">
+
+            <time datetime="2024-01-15">Jan 15, 2024</time>
+
+            <span class="blog-category">Full-Stack</span>
+
+          </div>
+
+          <h3>Building skr-hub: From Idea to Launch in 30 Days</h3>
+
+          <p>Lessons learned in shipping a full-stack portfolio platform with React, Node.js, and Three.js. Performance optimizations, deployment challenges, and the importance of user experience.</p>
+
+          <a href="blog/skr-hub-launch.html" class="btn btn-ghost">Read More</a>
+
+        </div>
+
+      </article>
+
+      <article class="blog-post glass-card reveal">
+
+        <div class="blog-thumb">
+
+          <img src="assets/blog2.webp" alt="Calisthenics Journey" loading="lazy" decoding="async">
+
+        </div>
+
+        <div class="blog-content">
+
+          <div class="blog-meta">
+
+            <time datetime="2024-02-01">Feb 1, 2024</time>
+
+            <span class="blog-category">Lifestyle</span>
+
+          </div>
+
+          <h3>3 Years of Calisthenics: From Zero to Advanced</h3>
+
+          <p>How consistent training transformed my body and mindset. Pull-ups, muscle-ups, handstands, and the parallels with coding discipline.</p>
+
+          <a href="blog/calisthenics-journey.html" class="btn btn-ghost">Read More</a>
+
+        </div>
+
+      </article>
+
+      <article class="blog-post glass-card reveal">
+
+        <div class="blog-thumb">
+
+          <img src="assets/blog3.webp" alt="Chemistry in Code" loading="lazy" decoding="async">
+
+        </div>
+
+        <div class="blog-content">
+
+          <div class="blog-meta">
+
+            <time datetime="2024-03-01">Mar 1, 2024</time>
+
+            <span class="blog-category">Science</span>
+
+          </div>
+
+          <h3>Chemistry Meets Software: Interactive Simulations</h3>
+
+          <p>Exploring advanced chemistry concepts through code. Building interactive simulations and the future of educational software.</p>
+
+          <a href="blog/chemistry-simulations.html" class="btn btn-ghost">Read More</a>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ══ TOOLS ══ -->
+
+<section id="tools" aria-label="Tools">
+
+  <div class="container">
+
+    <div class="sec-head reveal">
+
+      <span class="sec-num">06</span>
+
+      <h2 class="sec-title">Custom <em>Tools</em></h2>
+
+      <div class="sec-line"></div>
+
+    </div>
+
+    <div class="tools-grid">
+
+      <div class="tool-card glass-card reveal">
+
+        <div class="tool-icon"><i class="fa-solid fa-terminal"></i></div>
+
+        <h3>Portfolio Generator CLI</h3>
+
+        <p>Command-line tool to generate portfolios from JSON config. Supports multiple themes and deployment options.</p>
+
+        <div class="tool-tech">
+
+          <i class="devicon-nodejs-plain colored" title="Node.js"></i>
+
+          <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+
+        </div>
+
+        <a href="https://github.com/ndhoang1401-ops/portfolio-cli" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View on GitHub</a>
+
+      </div>
+
+      <div class="tool-card glass-card reveal">
+
+        <div class="tool-icon"><i class="fa-solid fa-code"></i></div>
+
+        <h3>Code Snippet Manager</h3>
+
+        <p>Organize and share code snippets with syntax highlighting, tags, and search functionality.</p>
+
+        <div class="tool-tech">
+
+          <i class="devicon-react-original colored" title="React"></i>
+
+          <i class="devicon-nodejs-plain colored" title="Node.js"></i>
+
+        </div>
+
+        <a href="https://github.com/ndhoang1401-ops/snippet-manager" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View on GitHub</a>
+
+      </div>
+
+      <div class="tool-card glass-card reveal">
+
+        <div class="tool-icon"><i class="fa-solid fa-chart-line"></i></div>
+
+        <h3>Performance Analyzer</h3>
+
+        <p>Analyze web app performance metrics, bundle sizes, and provide optimization recommendations.</p>
+
+        <div class="tool-tech">
+
+          <i class="devicon-python-plain colored" title="Python"></i>
+
+          <i class="devicon-javascript-plain colored" title="JavaScript"></i>
+
+        </div>
+
+        <a href="https://github.com/ndhoang1401-ops/perf-analyzer" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View on GitHub</a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ══ REVIEWS ══ -->
+<section id="testimonials" class="alt-bg" aria-label="Testimonials">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">07</span>
+      <h2 class="sec-title">What People <em>Say</em></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="testi-anime-banner reveal">
+      <img src="assets/anime4.webp" alt="" loading="lazy" decoding="async"/>
+      <div class="testi-anime-overlay"><span>"những gì tôi nghe được về DoanHoang" 🌸</span></div>
+    </div>
+    <div class="testi-grid">
+      <blockquote class="testi-card glass-card reveal">
+        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+        <p>"Delivered clean, elegant code ahead of schedule. DoanHoang has a rare eye for both performance and design — the kind of developer you want on every project."</p>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/48?img=11" alt="Minh T." class="testi-avatar-img" loading="lazy"/>
+          <div><strong>Minh T.</strong><span>Project Manager · Hanoi</span></div>
+        </div>
+      </blockquote>
+      <blockquote class="testi-card glass-card reveal">
+        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+        <p>"The UI animations and Three.js effects blew our team away. Pixel-perfect, load time under 2s, and the code was spotlessly clean."</p>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/48?img=44" alt="Linh P." class="testi-avatar-img" loading="lazy"/>
+          <div><strong>Linh P.</strong><span>Startup Founder · HCM City</span></div>
+        </div>
+      </blockquote>
+      <blockquote class="testi-card glass-card reveal">
+        <span class="testi-quote"><i class="fa-solid fa-quote-left"></i></span>
+        <p>"Responsive, thorough, genuinely cares about quality. DoanHoang treated our project like it was their own."</p>
+        <div class="testi-author">
+          <img src="https://i.pravatar.cc/48?img=68" alt="Khoa N." class="testi-avatar-img" loading="lazy"/>
+          <div><strong>Khoa N.</strong><span>Tech Lead · Singapore</span></div>
+        </div>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact" aria-label="Contact">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-num">08</span>
+      <h2 class="sec-title">Get In <em>Touch</em></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-left reveal">
+        <h3 class="contact-heading">Let's build something great <em>together</em></h3>
+        <p class="contact-sub">Have a project? Want to collaborate? Or just want to say hi? My inbox is always open.</p>
+        <div class="contact-cards">
+          <a href="mailto:doanhoang.4work@gmail.com" class="contact-card glass-card">
+            <div class="cc-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><span class="cc-label">Email</span><strong class="cc-val">doanhoang.4work@gmail.com</strong></div>
+          </a>
+          <a href="https://skr-hub.onrender.com" target="_blank" rel="noopener noreferrer" class="contact-card glass-card">
+            <div class="cc-icon"><i class="fa-solid fa-globe"></i></div>
+            <div><span class="cc-label">Portfolio</span><strong class="cc-val">skr-hub.onrender.com</strong></div>
+          </a>
+          <div class="contact-card glass-card">
+            <div class="cc-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div><span class="cc-label">Location</span><strong class="cc-val">Vietnam 🇻🇳</strong></div>
+          </div>
+        </div>
+        <div class="contact-socials">
+          <a href="https://github.com/ndhoang1401-ops"   target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://fb.com/huwang212"              target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://instagram.com/hoa_ng1401"      target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.youtube.com/@doanhoangytb"  target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://discord.gg/NSRndXR8Gz"          target="_blank" rel="noopener noreferrer" class="soc-btn" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+        </div>
+      </div>
+      <div class="contact-right reveal">
+        <div class="glass-card contact-calculator" style="margin-bottom:20px;padding:20px;border-radius:12px;">
+          <h3 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text);">💰 Freelance Calculator</h3>
+          <form id="calc-form" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="calc-field">
+              <label for="calc-hours" style="font-size:11px;color:var(--muted);margin-bottom:4px;display:block;">Hours</label>
+              <input type="number" id="calc-hours" placeholder="40" required min="1" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;">
+            </div>
+            <div class="calc-field">
+              <label for="calc-rate" style="font-size:11px;color:var(--muted);margin-bottom:4px;display:block;">Rate ($)</label>
+              <input type="number" id="calc-rate" placeholder="50" required min="1" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:8px;">Calculate</button>
+          </form>
+          <div id="calc-result" style="margin-top:12px;font-size:14px;color:var(--green);font-weight:600;"></div>
+        </div>
+        <form class="glass-card contact-form" id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="fg">
+              <label for="fname">Name</label>
+              <input type="text" id="fname" name="from_name" placeholder="Your name" required autocomplete="name"/>
+              <span class="ferr" id="err-name" role="alert"></span>
+            </div>
+            <div class="fg">
+              <label for="femail">Email</label>
+              <input type="email" id="femail" name="from_email" placeholder="your@email.com" required autocomplete="email"/>
+              <span class="ferr" id="err-email" role="alert"></span>
+            </div>
+          </div>
+          <div class="fg">
+            <label for="fsubj">Subject</label>
+            <input type="text" id="fsubj" name="subject" placeholder="What's this about?" required/>
+            <span class="ferr" id="err-subj" role="alert"></span>
+          </div>
+          <div class="fg">
+            <label for="fmsg">Message</label>
+            <textarea id="fmsg" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+            <span class="ferr" id="err-msg" role="alert"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
+            <span id="btn-default"><i class="fa-solid fa-paper-plane"></i> Send via Gmail</span>
+            <span id="btn-loading" style="display:none"><i class="fa-solid fa-spinner fa-spin"></i> Opening...</span>
+            <span id="btn-success" style="display:none"><i class="fa-solid fa-check"></i> Done!</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer role="contentinfo" class="footer-pro">
+  <div class="footer-divider"><span class="footer-sakura">🌸</span><div class="footer-divider-line"></div><span class="footer-sakura">🌸</span></div>
+  <div class="footer-main container">
+    <div class="footer-brand-col">
+      <a href="#hero" class="nav-logo footer-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
+      <p class="footer-tagline">"No talk. Just build." 🌸</p>
+      <p class="footer-motto">"5 cm/s — the falling speed of cherry blossom petals"</p>
+      <div class="footer-socials">
+        <a href="https://github.com/ndhoang1401-ops"   target="_blank" rel="noopener noreferrer" class="footer-soc"><i class="fa-brands fa-github"></i></a>
+        <a href="https://fb.com/huwang212"              target="_blank" rel="noopener noreferrer" class="footer-soc"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://instagram.com/hoa_ng1401"      target="_blank" rel="noopener noreferrer" class="footer-soc"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@doanhoangytb"  target="_blank" rel="noopener noreferrer" class="footer-soc"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://discord.gg/NSRndXR8Gz"          target="_blank" rel="noopener noreferrer" class="footer-soc"><i class="fa-brands fa-discord"></i></a>
+      </div>
+    </div>
+    <div class="footer-nav-col">
+      <h4 class="footer-col-title">Navigation</h4>
+      <ul class="footer-links">
+        <li><a href="#hero">🏠 Home</a></li>
+        <li><a href="#about">👤 About</a></li>
+        <li><a href="#skills">⚡ Skills</a></li>
+        <li><a href="#projects">🚀 Projects</a></li>
+        <li><a href="#case-studies">📊 Case Studies</a></li>
+        <li><a href="#blog">📝 Blog</a></li>
+        <li><a href="#tools">🛠️ Tools</a></li>
+        <li><a href="#testimonials">💬 Reviews</a></li>
+        <li><a href="#contact">📩 Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-stack-col">
+      <h4 class="footer-col-title">Tech Stack</h4>
+      <div class="footer-tech-pills">
+        <span>React</span><span>Node.js</span><span>Python</span>
+        <span>C++</span><span>Three.js</span><span>GSAP</span>
+        <span>PostgreSQL</span><span>Unity</span><span>Linux</span>
+      </div>
+    </div>
+    <div class="footer-contact-col">
+      <h4 class="footer-col-title">Get in Touch</h4>
+      <a href="mailto:doanhoang.4work@gmail.com" class="footer-email"><i class="fa-solid fa-envelope"></i> doanhoang.4work@gmail.com</a>
+      <a href="https://skr-hub.onrender.com" target="_blank" rel="noopener noreferrer" class="footer-email"><i class="fa-solid fa-globe"></i> skr-hub.onrender.com</a>
+      <a href="assets/DoanHoang-CV.pdf" download class="btn btn-primary footer-cv-btn">
+        <i class="fa-solid fa-download"></i> Download CV
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    <p>© <span id="copy-year"></span> DoanHoang · Made in Vietnam 🇻🇳 with <i class="fa-solid fa-heart" style="color:var(--pink)"></i></p>
+    <div class="footer-bottom-right">
+      <span class="footer-status"><span class="footer-status-dot"></span> Available for work</span>
+      <a href="#hero" class="back-top magnetic"><i class="fa-solid fa-chevron-up"></i></a>
+    </div>
+  </div>
+</footer>
+
+<!-- Music bar + YouTube player -->
+<div class="utility-bar" id="utility-bar">
+  <div class="util-tab-handle" id="util-handle" title="Click to pin/unpin">
+    <i class="fa-solid fa-music"></i>
+  </div>
+  <div class="util-inner">
+    <div class="util-clock">
+      <span id="util-time">00:00</span>
+      <span id="util-date" class="util-date-text"></span>
+    </div>
+    <div class="util-divider"></div>
+    <div class="util-music">
+      <div class="util-music-info">
+        <div class="util-vinyl" id="util-vinyl"><div class="util-vinyl-inner"></div></div>
+        <div class="util-song-text">
+          <span class="util-song-title">3107</span>
+          <span class="util-song-artist">W/n ft. Nâu, Duongg</span>
+        </div>
+      </div>
+      <div class="util-music-controls">
+        <button class="util-btn" id="music-prev"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="util-btn util-play" id="music-play"><i class="fa-solid fa-pause" id="play-icon"></i></button>
+        <button class="util-btn" id="music-next"><i class="fa-solid fa-forward-step"></i></button>
+        <button class="util-btn" id="music-mute"><i class="fa-solid fa-volume-xmark" id="mute-icon"></i></button>
+      </div>
+      <div class="util-progress-wrap">
+        <div class="util-progress-bar"><div class="util-progress-fill" id="music-progress"></div></div>
+      </div>
+    </div>
+    <div class="util-divider"></div>
+    <div class="util-links">
+      <a href="https://github.com/ndhoang1401-ops" target="_blank" rel="noopener noreferrer" class="util-btn"><i class="fa-brands fa-github"></i></a>
+      <a href="mailto:doanhoang.4work@gmail.com" class="util-btn"><i class="fa-solid fa-envelope"></i></a>
+      <a href="assets/DoanHoang-CV.pdf" download class="util-btn"><i class="fa-solid fa-download"></i></a>
+    </div>
+  </div>
+</div>
+
+<div id="yt-player-wrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;z-index:-1">
+  <div id="yt-player"></div>
+</div>
+
+<script src="js/main.js" defer></script>
+<script>document.getElementById('copy-year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
