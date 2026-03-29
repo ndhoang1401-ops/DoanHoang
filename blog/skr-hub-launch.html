@@ -1,148 +1,419 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Building skr-hub: From Idea to Launch in 30 Days — DoanHoang</title>
-  <meta name="description" content="Lessons learned shipping a full-stack portfolio platform with React, Node.js, and Three.js. Performance optimizations, deployment challenges, and more."/>
-  <meta name="author" content="DoanHoang"/>
-  <link rel="stylesheet" href="../css/style.css"/>
-  <style>
-    .blog-article { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; color: #e8e0f0; }
-    .blog-article h1 { font-size: 48px; margin-bottom: 20px; background: linear-gradient(135deg, #ffb7c5, #c9b1ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-    .blog-article .meta { font-size: 14px; color: #7a6090; margin-bottom: 40px; border-bottom: 1px solid rgba(255, 183, 197, 0.1); padding-bottom: 20px; }
-    .blog-article h2 { font-size: 28px; margin: 40px 0 20px; color: #ffb7c5; }
-    .blog-article p { margin-bottom: 18px; }
-    .blog-article code { background: rgba(255, 183, 197, 0.05); padding: 2px 6px; border-radius: 3px; color: #ffb7c5; font-family: 'Space Mono', monospace; }
-    .blog-article ul, .blog-article ol { margin-left: 20px; margin-bottom: 18px; }
-    .blog-article li { margin-bottom: 8px; }
-    .blog-article a { color: #ffb7c5; text-decoration: underline; }
-    .blog-article a:hover { text-decoration: none; }
-    .blog-nav { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); }
-    .blog-nav a { display: inline-block; margin: 0 10px; padding: 10px 20px; background: rgba(255, 183, 197, 0.1); border: 1px solid rgba(255, 183, 197, 0.2); border-radius: 6px; color: #ffb7c5; text-decoration: none; }
-    .blog-nav a:hover { background: rgba(255, 183, 197, 0.2); }
-  </style>
+  <title>Building skr-hub in 30 Days — Doãn Hoàng</title>
+  <link rel="icon" href="../assets/title.png" type="image/png"/>
+  <meta name="description" content="Lessons learned shipping a full-stack portfolio platform with React, Node.js, and Three.js — performance, deployment, and real talk."/>
+  <meta name="author" content="Nguyễn Doãn Hoàng"/>
+  <meta property="og:title" content="Building skr-hub in 30 Days"/>
+  <meta property="og:description" content="From blank repo to Lighthouse 95+ in 30 days."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" onload="this.rel='stylesheet'"/>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" onload="this.rel='stylesheet'"/>
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  </noscript>
+
+<style>
+/* ── TOKENS ── */
+:root{
+  --bg:#09060f; --bg2:#0f0819; --sf:#170c22; --sf2:#1e1030;
+  --bdr:rgba(255,143,171,.12); --bdr2:rgba(255,143,171,.25);
+  --txt:#fce8f0; --txt2:#c9a0b4; --txt3:#7d5570;
+  --pk:#ff8fab; --pk2:#ffb7c5; --pk3:#ffd6e3;
+  --grad:linear-gradient(135deg,#ff8fab,#ffb7c5,#ffd6e3);
+  --glass:rgba(23,12,34,.65);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --prose:740px;
+}
+
+/* ── RESET ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.75;overflow-x:hidden}
+a{color:var(--pk);text-decoration:none;transition:color .25s}
+a:hover{color:var(--pk2)}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--pk);border-radius:1px}
+:focus-visible{outline:2px solid var(--pk);outline-offset:3px}
+
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── SCROLL PROGRESS ── */
+#sp{position:fixed;top:0;left:0;height:2px;width:0;background:var(--grad);z-index:999;border-radius:1px;transition:width .1s linear}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 48px;
+  background:rgba(9,6,15,.0);backdrop-filter:blur(0px);
+  border-bottom:1px solid transparent;
+  transition:all .4s var(--ease);
+}
+nav.scrolled{padding:12px 48px;background:rgba(9,6,15,.9);backdrop-filter:blur(24px);border-color:var(--bdr)}
+.nav-logo{display:flex;align-items:center;gap:6px;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.06em;color:var(--txt);text-decoration:none;transition:color .3s}
+.nav-logo img{height:28px;object-fit:contain;filter:drop-shadow(0 0 6px var(--pk))}
+.nav-logo-txt{display:none}
+.nav-logo-txt span{color:var(--pk)}
+.nav-logo:hover{color:var(--pk)}
+.back-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 18px;border-radius:50px;
+  border:1.5px solid var(--bdr2);color:var(--pk);font-size:.72rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,143,171,.05);backdrop-filter:blur(8px);
+  transition:all .3s;
+}
+.back-btn:hover{background:var(--pk);color:var(--bg);border-color:var(--pk);box-shadow:0 0 20px rgba(255,143,171,.4)}
+
+/* ── HERO HEADER ── */
+.post-hero{
+  padding:140px 48px 80px;
+  position:relative;overflow:hidden;z-index:1;
+  border-bottom:1px solid var(--bdr);
+}
+.post-hero-orb{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,143,171,.07),transparent 65%);
+  right:-100px;top:50%;transform:translateY(-50%);pointer-events:none;
+}
+.post-hero-inner{max-width:var(--prose);margin:0 auto;position:relative;z-index:2}
+.post-cat{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--pk);
+  margin-bottom:20px;
+}
+.post-cat::before{content:'✿';font-size:.8rem}
+.post-hero h1{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(2rem,5vw,3.4rem);line-height:1.06;letter-spacing:-.03em;
+  margin-bottom:24px;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.post-meta{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  font-size:.72rem;color:var(--txt3);letter-spacing:.06em;
+}
+.post-meta-sep{color:var(--bdr2)}
+.post-meta strong{color:var(--txt2)}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.post-tag{
+  font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:50px;
+  border:1px solid var(--bdr2);color:var(--txt3);
+  background:rgba(255,143,171,.03);
+}
+
+/* ── ARTICLE BODY ── */
+.post-body{
+  max-width:var(--prose);margin:0 auto;
+  padding:64px 48px 100px;
+  position:relative;z-index:1;
+}
+.post-body p{font-size:.95rem;color:var(--txt2);margin-bottom:20px;line-height:1.85}
+.post-body strong{color:var(--txt);font-weight:500}
+.post-body em{color:var(--pk);font-style:italic}
+
+/* Headings */
+.post-body h2{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:1.5rem;letter-spacing:-.02em;
+  margin:52px 0 18px;color:var(--txt);
+  display:flex;align-items:center;gap:10px;
+}
+.post-body h2::before{
+  content:'';display:block;width:4px;height:22px;
+  background:var(--grad);border-radius:2px;flex-shrink:0;
+}
+.post-body h3{font-family:'Syne',sans-serif;font-weight:600;font-size:1.05rem;margin:32px 0 12px;color:var(--pk2)}
+
+/* Lists */
+.post-body ul,.post-body ol{margin:0 0 20px 0;padding:0}
+.post-body li{
+  font-size:.93rem;color:var(--txt2);margin-bottom:10px;
+  padding-left:20px;position:relative;line-height:1.75;
+}
+.post-body ul > li::before{
+  content:'🌸';font-size:.65rem;
+  position:absolute;left:0;top:.15em;
+}
+.post-body ol{counter-reset:ol}
+.post-body ol > li{counter-increment:ol}
+.post-body ol > li::before{
+  content:counter(ol)'.';
+  position:absolute;left:0;top:0;
+  font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;
+  color:var(--pk);line-height:1.75;
+}
+
+/* Code */
+.post-body code{
+  background:rgba(255,143,171,.07);padding:2px 8px;
+  border-radius:5px;color:var(--pk2);font-size:.88em;
+  font-family:'Courier New',monospace;border:1px solid var(--bdr);
+}
+
+/* Callout / quote */
+.callout{
+  background:var(--glass);backdrop-filter:blur(12px);
+  border-left:3px solid var(--pk);border-radius:0 12px 12px 0;
+  padding:18px 22px;margin:28px 0;
+}
+.callout p{margin:0;font-style:italic;color:var(--txt2)}
+.callout strong{color:var(--pk)}
+
+/* Metric cards */
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:28px 0}
+.metric-card{
+  background:var(--glass);backdrop-filter:blur(12px);
+  border:1px solid var(--bdr);border-radius:14px;
+  padding:18px 14px;text-align:center;
+  transition:border-color .3s,transform .3s;
+}
+.metric-card:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.metric-val{
+  font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;line-height:1;margin-bottom:6px;
+}
+.metric-lbl{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3)}
+
+/* Tech stack pills */
+.tech-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 28px}
+.tech-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 13px;border-radius:50px;
+  border:1px solid var(--bdr2);font-size:.68rem;
+  color:var(--txt2);background:rgba(255,143,171,.04);
+  letter-spacing:.05em;
+}
+.tech-pill i{color:var(--pk);font-size:.8rem}
+
+/* Timeline steps */
+.timeline{padding-left:16px;border-left:1.5px solid var(--bdr2);margin:20px 0 28px}
+.tl-item{position:relative;padding:0 0 20px 18px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--pk);border:3px solid var(--bg);box-shadow:0 0 10px rgba(255,143,171,.4)}
+.tl-step{display:block;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pk);margin-bottom:4px}
+.tl-item h4{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:6px}
+.tl-item p{font-size:.83rem;color:var(--txt3);line-height:1.7;margin:0}
+
+/* Divider */
+.divider{width:100%;height:1px;background:var(--bdr);margin:48px 0}
+
+/* ── NAV BOTTOM ── */
+.post-nav{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+  padding:40px 0;margin-top:20px;
+  border-top:1px solid var(--bdr);
+}
+.post-nav a{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:50px;
+  border:1.5px solid var(--bdr2);color:var(--txt2);font-size:.72rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,143,171,.03);transition:all .3s;
+}
+.post-nav a:hover{border-color:var(--pk);color:var(--pk);background:rgba(255,143,171,.07)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--bdr);
+  padding:32px 48px;text-align:center;
+  font-size:.72rem;color:var(--txt3);letter-spacing:.06em;
+  position:relative;z-index:1;
+}
+footer span{color:var(--pk)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  nav,nav.scrolled{padding:14px 20px}
+  .post-hero{padding:110px 20px 56px}
+  .post-body{padding:48px 20px 80px}
+  .post-hero h1{font-size:1.9rem}
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  footer{padding:24px 20px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-<nav id="navbar" aria-label="Main navigation" style="position: fixed; width: 100%; top: 0; left: 0; z-index: 100; background: rgba(10, 8, 18, 0.95); backdrop-filter: blur(10px); padding: 16px 0; border-bottom: 1px solid rgba(255, 183, 197, 0.1);">
-  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
-    <a href="../#hero" class="nav-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
-    <a href="../#blog" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">← Back to Blog</a>
-  </div>
+
+<div id="sp" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo" aria-label="Doãn Hoàng Home">
+    <img src="../assets/title.png" alt="Doãn Hoàng" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span class="nav-logo-txt"><span>&lt;</span>DH<span>/&gt;</span></span>
+  </a>
+  <a href="../index.html#blog" class="back-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
 </nav>
 
-<article class="blog-article" style="margin-top: 100px;">
-  <h1>Building skr-hub: From Idea to Launch in 30 Days</h1>
-  
-  <div class="meta">
-    <time>Jan 15, 2024</time> • 8 min read • Full-Stack Development
+<!-- POST HEADER -->
+<header class="post-hero">
+  <div class="post-hero-orb" aria-hidden="true"></div>
+  <div class="post-hero-inner">
+    <p class="post-cat">Full-Stack Development</p>
+    <h1>Building skr-hub:<br/>From Idea to Launch in 30 Days</h1>
+    <div class="post-meta">
+      <time datetime="2024-01-15">Jan 15, 2024</time>
+      <span class="post-meta-sep">·</span>
+      <span>8 min read</span>
+      <span class="post-meta-sep">·</span>
+      <strong>Nguyễn Doãn Hoàng</strong>
+    </div>
+    <div class="post-tags">
+      <span class="post-tag">React</span>
+      <span class="post-tag">Node.js</span>
+      <span class="post-tag">Three.js</span>
+      <span class="post-tag">Performance</span>
+      <span class="post-tag">Deployment</span>
+    </div>
   </div>
+</header>
 
-  <p>30 days. That's all it took to go from a blank repository to a fully functional, deployed full-stack portfolio platform. This is the story of <strong>skr-hub</strong> — how we built it, what we learned, and the challenges we faced.</p>
+<!-- ARTICLE -->
+<article class="post-body">
+
+  <p>30 days. That's all it took to go from a blank repository to a fully functional, deployed full-stack portfolio platform. This is the story of <strong>skr-hub</strong> — how it got built, what broke, what we learned, and why Lighthouse 95+ is achievable if you actually care.</p>
 
   <h2>The Motivation</h2>
-  <p>I needed a portfolio that could showcase my work while demonstrating my technical skills in real-time. Not just a static website, but a living, breathing application that could handle:</p>
+  <p>I needed a portfolio that could <em>demonstrate</em> technical skill, not just describe it. Not a static website with pretty colours — a living application that actually works under pressure. That meant:</p>
   <ul>
-    <li>Complex animations and visual effects (Three.js particles)</li>
-    <li>Real-time data fetching (GitHub API integration)</li>
-    <li>Form handling and email notifications</li>
-    <li>Multiple theme support</li>
-    <li>Lighthouse performance targets (95+)</li>
+    <li>Complex animations and 3D visual effects in real-time (Three.js particles)</li>
+    <li>Real-time data from external APIs (GitHub stars, commit counts)</li>
+    <li>Contact form with email delivery, not just a mailto link</li>
+    <li>Multiple themes with persistent user preference</li>
+    <li>Lighthouse performance score of 95+ — non-negotiable</li>
   </ul>
+
+  <div class="callout">
+    <p><strong>The rule I set myself:</strong> if I'm going to call myself an engineer, the portfolio itself has to be evidence. Not just projects I link to — the site itself.</p>
+  </div>
 
   <h2>The Tech Stack</h2>
-  <p>We chose a modern, proven tech stack:</p>
-  <ul>
-    <li><strong>Frontend:</strong> React with GSAP for animations</li>
-    <li><strong>Backend:</strong> Node.js with Express for API routes</li>
-    <li><strong>Database:</strong> MongoDB for flexible data storage</li>
-    <li><strong>3D Graphics:</strong> Three.js for particle effects</li>
-    <li><strong>Deployment:</strong> Render for serverless hosting</li>
-    <li><strong>Email:</strong> EmailJS for contact form submissions</li>
-  </ul>
+  <p>Chosen for real reasons, not hype:</p>
+  <div class="tech-row">
+    <span class="tech-pill"><i class="fa-brands fa-react"></i> React</span>
+    <span class="tech-pill"><i class="fa-brands fa-node-js"></i> Node.js + Express</span>
+    <span class="tech-pill"><i class="fa-solid fa-database"></i> MongoDB</span>
+    <span class="tech-pill"><i class="fa-solid fa-cube"></i> Three.js</span>
+    <span class="tech-pill"><i class="fa-solid fa-server"></i> Render</span>
+    <span class="tech-pill"><i class="fa-solid fa-envelope"></i> EmailJS</span>
+  </div>
+  <p>React for component reuse. Node for API flexibility. Three.js because static doesn't cut it. Render because it deploys from Git with zero config. EmailJS because building a mail server for a portfolio is overkill.</p>
 
-  <h2>Week 1: Planning &amp; Setup</h2>
-  <p>The first week was all about planning. We created wireframes, defined the project structure, and set up the development environment. Key decisions made:</p>
-  <ul>
-    <li>Monorepo structure for client and server</li>
-    <li>Environmental variables for API keys and secrets</li>
-    <li>Git workflow with feature branches</li>
-    <li>CI/CD pipeline with GitHub Actions</li>
-  </ul>
+  <h2>Week by Week</h2>
 
-  <h2>Week 2: Frontend Development</h2>
-  <p>With the foundation in place, we moved to building the UI components:</p>
-  <ul>
-    <li>Created reusable React components (Hero, ProjectCard, SkillBar)</li>
-    <li>Implemented GSAP animations for smooth transitions</li>
-    <li>Built the Three.js particle field from scratch</li>
-    <li>Designed the glassmorphism UI with CSS modules</li>
-  </ul>
-  <p>One major challenge: Three.js performance. We had to optimize particle count based on device capabilities, reducing from 2000 particles on desktop to 600 on mobile.</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <span class="tl-step">Week 1</span>
+      <h4>Planning &amp; Foundation</h4>
+      <p>Wireframes, project structure, environment setup. Monorepo for client + server. Git workflow with feature branches. CI/CD pipeline via GitHub Actions from day one — not bolted on later.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <span class="tl-step">Week 2</span>
+      <h4>Frontend — UI &amp; Animation</h4>
+      <p>Built all React components: Hero, ProjectCard, SkillBar. Implemented GSAP for scroll-triggered transitions. Built the Three.js particle field from scratch — initial count of 2,000 particles on desktop, dropped to 600 on mobile after GPU profiling.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <span class="tl-step">Week 3</span>
+      <h4>Backend &amp; Integration</h4>
+      <p>REST API endpoints for project data and live stats. GitHub API integration with a caching layer (critical — rate limits hit hard in testing). EmailJS wired up for contact form. Error handling and input validation throughout.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <span class="tl-step">Week 4</span>
+      <h4>Optimisation &amp; Deploy</h4>
+      <p>Lighthouse audits every day. WebP image conversion. Code splitting to cut bundle size. Service worker for offline support. Final deployment to Render with automatic builds on push to main.</p>
+    </div>
+  </div>
 
-  <h2>Week 3: Backend &amp; Integration</h2>
-  <p>The backend was critical for real-time features:</p>
-  <ul>
-    <li>Built REST API endpoints for project data and stats</li>
-    <li>Integrated GitHub API to fetch repository stars and commits</li>
-    <li>Set up EmailJS for contact form notifications</li>
-    <li>Added error handling and request validation</li>
-  </ul>
-  <p>Performance was a concern from day one. We implemented caching strategies and lazy-loading to keep API response times under 100ms.</p>
+  <h2>The Challenges That Actually Hurt</h2>
 
-  <h2>Week 4: Optimization &amp; Deployment</h2>
-  <p>The final week was all about optimization and getting live:</p>
+  <h3>Three.js on Low-End Devices</h3>
+  <p>The particle system looked great on my MacBook. On a mid-range Android phone? Slideshow. Solution: detect GPU tier via <code>gl.getParameter()</code>, scale particle count dynamically (2000 → 800 → 400), and use <code>requestAnimationFrame</code> with frame-skipping on slow devices.</p>
+
+  <h3>GitHub API Rate Limits</h3>
+  <p>Unauthenticated: 60 requests/hour. With a portfolio getting 200+ visits/day, that's a wall. Solution: server-side caching with a 15-minute TTL. Requests hit the cache, not GitHub. API calls dropped from hundreds to single digits per hour.</p>
+
+  <h3>Lighthouse on a Budget</h3>
+  <p>Getting to 95+ meant cutting everything that couldn't justify its weight:</p>
   <ul>
-    <li>Lighthouse audit: achieved 95+ scores across all metrics</li>
-    <li>Image optimization with WebP format</li>
-    <li>Code splitting to reduce bundle size</li>
-    <li>Service worker implementation for offline support</li>
-    <li>Deployed to Render with automatic CI/CD</li>
+    <li>Removed 3 fonts, kept 2 with <code>font-display: swap</code></li>
+    <li>Replaced all <code>top</code>/<code>left</code> animations with <code>transform</code> — GPU compositing only</li>
+    <li>Lazy-loaded all images below the fold</li>
+    <li>Preloaded critical CSS and fonts</li>
+    <li>Eliminated every layout shift with explicit <code>width</code>/<code>height</code> on images</li>
   </ul>
 
   <h2>Key Learnings</h2>
-  <p><strong>Performance is a feature.</strong> Users notice fast websites. We obsessed over load times and achieved sub-2s first paint through aggressive optimization.</p>
-  
-  <p><strong>Mobile-first matters.</strong> Building for mobile constraints (smaller GPU, limited bandwidth) forced better decisions for desktop as well.</p>
-  
-  <p><strong>Animations aren't free.</strong> Every animation must justify its existence. We cut animations that didn't add value, even if they looked cool.</p>
-  
-  <p><strong>APIs are real bottlenecks.</strong> GitHub API rate limits and latency were more challenging than expected. Caching became critical.</p>
 
-  <h2>Deployment Strategy</h2>
-  <p>We chose Render for its simplicity and automatic deployments from Git. The workflow:</p>
-  <ol>
-    <li>Push code to main branch</li>
-    <li>GitHub Actions run tests</li>
-    <li>Render automatically builds and deploys</li>
-    <li>Service worker updates on next visit</li>
-  </ol>
-
-  <h2>Metrics</h2>
-  <p>After 30 days, here's what we achieved:</p>
-  <ul>
-    <li>Lighthouse Score: 95/100 🚀</li>
-    <li>First Contentful Paint: 1.2s</li>
-    <li>Time to Interactive: 2.8s</li>
-    <li>Bundle Size: 145KB (gzipped)</li>
-    <li>Mobile Performance: 90+</li>
-  </ul>
-
-  <h2>Conclusion</h2>
-  <p>Building skr-hub in 30 days taught me that constraints breed innovation. By focusing on what matters (performance, UX, code quality), we shipped a product we're genuinely proud of.</p>
-  
-  <p>Next steps? We're planning to add a blog CMS, project filtering, and a contact form backend. But the foundation is solid, and the journey doesn't end here.</p>
-
-  <div class="blog-nav">
-    <a href="../#blog">← Back to Blog</a>
-    <a href="../#contact">Get in Touch →</a>
+  <div class="callout">
+    <p><strong>Performance is a feature, not a phase.</strong> Building for performance from day one is 10× easier than retrofitting it in week 4.</p>
   </div>
+
+  <p><strong>Mobile-first forced better decisions everywhere.</strong> Every GPU constraint, bandwidth limit, and touch-target size I fixed for mobile made the desktop experience cleaner too.</p>
+
+  <p><strong>Animations are not free.</strong> I cut animations that looked cool but added no clarity. If it doesn't help the user understand something faster, it's decorative weight.</p>
+
+  <p><strong>Caching is not optional.</strong> Any API you don't control will betray you at peak load. Cache aggressively, invalidate carefully.</p>
+
+  <h2>Final Metrics</h2>
+  <div class="metrics-grid">
+    <div class="metric-card"><span class="metric-val">95+</span><span class="metric-lbl">Lighthouse Score</span></div>
+    <div class="metric-card"><span class="metric-val">1.2s</span><span class="metric-lbl">First Paint</span></div>
+    <div class="metric-card"><span class="metric-val">2.8s</span><span class="metric-lbl">Time to Interactive</span></div>
+    <div class="metric-card"><span class="metric-val">145KB</span><span class="metric-lbl">Bundle (gzipped)</span></div>
+    <div class="metric-card"><span class="metric-val">90+</span><span class="metric-lbl">Mobile Performance</span></div>
+    <div class="metric-card"><span class="metric-val">30d</span><span class="metric-lbl">Idea → Live</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>What's Next</h2>
+  <p>The foundation is solid. Planned additions: a lightweight blog CMS (probably MDX), project filtering by tech stack, and a real contact backend to replace EmailJS for higher-volume usage. The 30-day constraint was artificial — the work continues.</p>
+
+  <p>If you're building something similar and want to talk architecture, performance, or deployment strategy — <a href="../index.html#contact">get in touch</a>. I actually reply.</p>
+
+  <div class="post-nav">
+    <a href="../index.html#blog"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All Posts</a>
+    <a href="../index.html#contact">Get in Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+  </div>
+
 </article>
 
-<footer role="contentinfo" style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); margin-top: 80px; color: #7a6090;">
-  <p>© 2024 DoanHoang · Made with <i class="fa-solid fa-heart" style="color: #ffb7c5;"></i></p>
+<footer>
+  <p>© <span id="yr"></span> <span>Nguyễn Doãn Hoàng</span> · Made with 🌸 in Vietnam</p>
 </footer>
 
-<script src="../js/main.js" defer></script>
+<script>
+  // Scroll progress
+  const sp = document.getElementById('sp');
+  window.addEventListener('scroll', () => {
+    if (sp) sp.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+  }, { passive: true });
+
+  // Nav scroll
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav?.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // Copyright year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

@@ -1,171 +1,325 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chemistry Meets Software: Interactive Simulations — DoanHoang</title>
-  <meta name="description" content="Exploring advanced chemistry concepts through code. Building interactive simulations and the future of educational software."/>
-  <meta name="author" content="DoanHoang"/>
-  <link rel="stylesheet" href="../css/style.css"/>
-  <style>
-    .blog-article { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; color: #e8e0f0; }
-    .blog-article h1 { font-size: 48px; margin-bottom: 20px; background: linear-gradient(135deg, #ffb7c5, #c9b1ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-    .blog-article .meta { font-size: 14px; color: #7a6090; margin-bottom: 40px; border-bottom: 1px solid rgba(255, 183, 197, 0.1); padding-bottom: 20px; }
-    .blog-article h2 { font-size: 28px; margin: 40px 0 20px; color: #ffb7c5; }
-    .blog-article p { margin-bottom: 18px; }
-    .blog-article code { background: rgba(255, 183, 197, 0.05); padding: 2px 6px; border-radius: 3px; color: #ffb7c5; font-family: 'Space Mono', monospace; }
-    .blog-article ul, .blog-article ol { margin-left: 20px; margin-bottom: 18px; }
-    .blog-article li { margin-bottom: 8px; }
-    .blog-article a { color: #ffb7c5; text-decoration: underline; }
-    .blog-article a:hover { text-decoration: none; }
-    .blog-nav { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); }
-    .blog-nav a { display: inline-block; margin: 0 10px; padding: 10px 20px; background: rgba(255, 183, 197, 0.1); border: 1px solid rgba(255, 183, 197, 0.2); border-radius: 6px; color: #ffb7c5; text-decoration: none; }
-    .blog-nav a:hover { background: rgba(255, 183, 197, 0.2); }
-  </style>
+  <title>Chemistry Meets Software — Doãn Hoàng</title>
+  <link rel="icon" href="../assets/title.png" type="image/png"/>
+  <meta name="description" content="Exploring advanced chemistry through code — building interactive simulations and the future of science education."/>
+  <meta name="author" content="Nguyễn Doãn Hoàng"/>
+  <meta property="og:title" content="Chemistry Meets Software: Interactive Simulations"/>
+  <meta property="og:description" content="Where chemistry and software collide — and why it matters."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" onload="this.rel='stylesheet'"/>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" onload="this.rel='stylesheet'"/>
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  </noscript>
+
+<style>
+/* ── TOKENS ── */
+:root{
+  --bg:#09060f; --bg2:#0f0819; --sf:#170c22; --sf2:#1e1030;
+  --bdr:rgba(255,143,171,.12); --bdr2:rgba(255,143,171,.25);
+  --txt:#fce8f0; --txt2:#c9a0b4; --txt3:#7d5570;
+  --pk:#ff8fab; --pk2:#ffb7c5; --pk3:#ffd6e3;
+  --grad:linear-gradient(135deg,#ff8fab,#ffb7c5,#ffd6e3);
+  --glass:rgba(23,12,34,.65);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --prose:740px;
+}
+
+/* ── RESET ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.75;overflow-x:hidden}
+a{color:var(--pk);text-decoration:none;transition:color .25s}
+a:hover{color:var(--pk2)}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--pk);border-radius:1px}
+:focus-visible{outline:2px solid var(--pk);outline-offset:3px}
+
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── SCROLL PROGRESS ── */
+#sp{position:fixed;top:0;left:0;height:2px;width:0;background:var(--grad);z-index:999;border-radius:1px;transition:width .1s linear}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(9,6,15,0);backdrop-filter:blur(0px);border-bottom:1px solid transparent;transition:all .4s var(--ease)}
+nav.scrolled{padding:12px 48px;background:rgba(9,6,15,.9);backdrop-filter:blur(24px);border-color:var(--bdr)}
+.nav-logo{display:flex;align-items:center;gap:6px;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.06em;color:var(--txt);text-decoration:none;transition:color .3s}
+.nav-logo img{height:28px;object-fit:contain;filter:drop-shadow(0 0 6px var(--pk))}
+.nav-logo-txt{display:none}
+.nav-logo-txt span{color:var(--pk)}
+.nav-logo:hover{color:var(--pk)}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:50px;border:1.5px solid var(--bdr2);color:var(--pk);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,143,171,.05);backdrop-filter:blur(8px);transition:all .3s;text-decoration:none}
+.back-btn:hover{background:var(--pk);color:var(--bg);border-color:var(--pk);box-shadow:0 0 20px rgba(255,143,171,.4)}
+
+/* ── POST HERO ── */
+.post-hero{padding:140px 48px 80px;position:relative;overflow:hidden;z-index:1;border-bottom:1px solid var(--bdr)}
+.post-hero-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,143,171,.07),transparent 65%);right:-100px;top:50%;transform:translateY(-50%);pointer-events:none}
+.post-hero-inner{max-width:var(--prose);margin:0 auto;position:relative;z-index:2}
+.post-cat{display:inline-flex;align-items:center;gap:8px;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--pk);margin-bottom:20px}
+.post-cat::before{content:'⚗️';font-size:.9rem}
+.post-hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,3.4rem);line-height:1.06;letter-spacing:-.03em;margin-bottom:24px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.post-meta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:.72rem;color:var(--txt3);letter-spacing:.06em}
+.post-meta-sep{color:var(--bdr2)}
+.post-meta strong{color:var(--txt2)}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.post-tag{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;border:1px solid var(--bdr2);color:var(--txt3);background:rgba(255,143,171,.03)}
+
+/* ── ARTICLE BODY ── */
+.post-body{max-width:var(--prose);margin:0 auto;padding:64px 48px 100px;position:relative;z-index:1}
+.post-body p{font-size:.95rem;color:var(--txt2);margin-bottom:20px;line-height:1.85}
+.post-body strong{color:var(--txt);font-weight:500}
+.post-body em{color:var(--pk);font-style:italic}
+
+/* Headings */
+.post-body h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:-.02em;margin:52px 0 18px;color:var(--txt);display:flex;align-items:center;gap:10px}
+.post-body h2::before{content:'';display:block;width:4px;height:22px;background:var(--grad);border-radius:2px;flex-shrink:0}
+.post-body h3{font-family:'Syne',sans-serif;font-weight:600;font-size:1.05rem;margin:32px 0 12px;color:var(--pk2)}
+
+/* Lists */
+.post-body ul,.post-body ol{margin:0 0 20px 0;padding:0}
+.post-body li{font-size:.93rem;color:var(--txt2);margin-bottom:10px;padding-left:20px;position:relative;line-height:1.75}
+.post-body ul > li::before{content:'⚗️';font-size:.6rem;position:absolute;left:0;top:.2em}
+.post-body ol{counter-reset:ol}
+.post-body ol > li{counter-increment:ol}
+.post-body ol > li::before{content:counter(ol)'.';position:absolute;left:0;top:0;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;color:var(--pk);line-height:1.75}
+
+/* Code */
+.post-body code{background:rgba(255,143,171,.07);padding:2px 8px;border-radius:5px;color:var(--pk2);font-size:.88em;font-family:'Courier New',monospace;border:1px solid var(--bdr)}
+
+/* Callout */
+.callout{background:var(--glass);backdrop-filter:blur(12px);border-left:3px solid var(--pk);border-radius:0 12px 12px 0;padding:18px 22px;margin:28px 0}
+.callout p{margin:0;font-style:italic;color:var(--txt2)}
+.callout strong{color:var(--pk)}
+
+/* Project cards */
+.project-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0 32px}
+.project-card{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--bdr);border-radius:16px;padding:20px 18px;transition:border-color .3s,transform .3s}
+.project-card:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.project-card-icon{font-size:1.6rem;margin-bottom:10px;display:block}
+.project-card h4{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:8px}
+.project-card p{font-size:.76rem;color:var(--txt3);margin:0;line-height:1.6}
+
+/* Step cards */
+.steps{display:flex;flex-direction:column;gap:0;margin:20px 0 28px;counter-reset:step}
+.step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--bdr);counter-increment:step}
+.step:last-child{border-bottom:none}
+.step-num{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0;width:24px;line-height:1.6}
+.step-body h4{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--txt);margin-bottom:5px}
+.step-body p{font-size:.82rem;color:var(--txt3);margin:0;line-height:1.7}
+
+/* Future grid */
+.future-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0 28px}
+.future-card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--bdr);border-radius:12px;padding:16px 14px;text-align:center;transition:border-color .3s}
+.future-card:hover{border-color:var(--bdr2)}
+.future-card i{font-size:1.4rem;color:var(--pk);margin-bottom:8px;display:block}
+.future-card span{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--txt2)}
+
+/* Divider */
+.divider{width:100%;height:1px;background:var(--bdr);margin:48px 0}
+
+/* ── POST NAV ── */
+.post-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding:40px 0;margin-top:20px;border-top:1px solid var(--bdr)}
+.post-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:50px;border:1.5px solid var(--bdr2);color:var(--txt2);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,143,171,.03);transition:all .3s;text-decoration:none}
+.post-nav a:hover{border-color:var(--pk);color:var(--pk);background:rgba(255,143,171,.07)}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--bdr);padding:32px 48px;text-align:center;font-size:.72rem;color:var(--txt3);letter-spacing:.06em;position:relative;z-index:1}
+footer span{color:var(--pk)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  nav,nav.scrolled{padding:14px 20px}
+  .post-hero{padding:110px 20px 56px}
+  .post-body{padding:48px 20px 80px}
+  .post-hero h1{font-size:1.9rem}
+  .project-cards{grid-template-columns:1fr}
+  .future-grid{grid-template-columns:repeat(2,1fr)}
+  footer{padding:24px 20px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-<nav id="navbar" aria-label="Main navigation" style="position: fixed; width: 100%; top: 0; left: 0; z-index: 100; background: rgba(10, 8, 18, 0.95); backdrop-filter: blur(10px); padding: 16px 0; border-bottom: 1px solid rgba(255, 183, 197, 0.1);">
-  <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
-    <a href="../#hero" class="nav-logo"><span class="logo-bracket">&lt;</span>DH<span class="logo-bracket">/&gt;</span></a>
-    <a href="../#blog" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">← Back to Blog</a>
-  </div>
+
+<div id="sp" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo" aria-label="Doãn Hoàng Home">
+    <img src="../assets/title.png" alt="Doãn Hoàng" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span class="nav-logo-txt"><span>&lt;</span>DH<span>/&gt;</span></span>
+  </a>
+  <a href="../index.html#blog" class="back-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Blog</a>
 </nav>
 
-<article class="blog-article" style="margin-top: 100px;">
-  <h1>Chemistry Meets Software: Interactive Simulations</h1>
-  
-  <div class="meta">
-    <time>Mar 1, 2024</time> • 7 min read • Science & Technology
+<!-- POST HEADER -->
+<header class="post-hero">
+  <div class="post-hero-orb" aria-hidden="true"></div>
+  <div class="post-hero-inner">
+    <p class="post-cat">Science &amp; Technology</p>
+    <h1>Chemistry Meets Software:<br/>Interactive Simulations</h1>
+    <div class="post-meta">
+      <time datetime="2024-03-01">Mar 1, 2024</time>
+      <span class="post-meta-sep">·</span>
+      <span>7 min read</span>
+      <span class="post-meta-sep">·</span>
+      <strong>Nguyễn Doãn Hoàng</strong>
+    </div>
+    <div class="post-tags">
+      <span class="post-tag">Three.js</span>
+      <span class="post-tag">WebGL</span>
+      <span class="post-tag">Chemistry</span>
+      <span class="post-tag">Education</span>
+      <span class="post-tag">Simulation</span>
+    </div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article class="post-body">
+
+  <p>One of my favourite projects has been building interactive chemistry simulations — software that helps people <em>see</em> what's impossible to see with the naked eye. Electrons filling orbitals. Particles colliding with thermal velocity. Proteins folding into structure. This is where code stops being a tool and starts being a microscope.</p>
+
+  <h2>Why Chemistry &amp; Software Belong Together</h2>
+  <p>Chemistry is the foundation of almost every major technology problem of our time. But it's almost invisible in tech education. That's a gap worth closing:</p>
+  <ul>
+    <li><strong>Battery technology:</strong> understanding lithium-ion chemistry at the atomic level directly leads to better devices and faster charging</li>
+    <li><strong>Drug discovery:</strong> computational chemistry has compressed decade-long research timelines into months</li>
+    <li><strong>Materials science:</strong> new materials — stronger, lighter, more conductive — emerge from understanding how atoms interact</li>
+    <li><strong>Climate tech:</strong> carbon capture, hydrogen fuel cells, next-gen solar — all built on chemistry</li>
+  </ul>
+
+  <div class="callout">
+    <p><strong>The problem:</strong> traditional chemistry education is frozen in time. Students memorise formulas without ever building intuition for <em>why</em> atoms bond the way they do. Software changes that.</p>
   </div>
 
-  <p>One of my favorite projects has been exploring the intersection of chemistry and software—specifically, building interactive simulations that help visualize complex molecular interactions. This article dives into that journey and where I think the future of science education is headed.</p>
+  <h2>The Power of Seeing in 3D</h2>
+  <p>Most people — including most chemistry students — cannot visualise molecular structures in three dimensions. We lack the intuition because we've never seen it. That's exactly the gap software can close.</p>
 
-  <h2>Why Chemistry Matters in Tech</h2>
-  <p>Chemistry is often overlooked in tech circles, but it's the foundation of innovation:</p>
-  <ul>
-    <li><strong>Battery Technology:</strong> Understanding lithium-ion chemistry is crucial for better devices</li>
-    <li><strong>Drugs &amp; Medicine:</strong> Computational chemistry accelerates drug discovery</li>
-    <li><strong>Materials Science:</strong> New materials emerge from understanding atomic interactions</li>
-    <li><strong>Climate Tech:</strong> Carbon capture and renewable energy rely on chemistry</li>
-  </ul>
-  
-  <p>But here's the problem: traditional chemistry education is stuck in the past. Students memorize formulas without understanding why atoms bond the way they do.</p>
+  <p>A few hundred lines of Three.js is enough to show an electron probability cloud rotating in real time. Students who spent months struggling with abstract orbital theory suddenly understand it in minutes when they can grab it, rotate it, and watch electrons fill from the lowest energy state upward.</p>
 
-  <h2>The Power of Visualization</h2>
-  <p>Most people can't visualize molecular structures in 3D. We lack the intuition. That's where software comes in.</p>
-  
-  <p>A few years ago, I built a simple Three.js simulation showing molecular orbital interactions. With just a few hundred lines of JavaScript, I could visualize:</p>
-  <ul>
-    <li>Electron probability clouds</li>
-    <li>Bond formation between atoms</li>
-    <li>Energy level transitions</li>
-    <li>Reaction pathways in real-time</li>
-  </ul>
+  <p>The feedback I've seen from people using these simulations is consistent: <em>"I finally get it."</em> Not because the content changed — because the medium did.</p>
 
-  <p>The feedback was incredible. Students who struggled with abstract concepts suddenly "got it" by seeing electrons move in 3D space.</p>
+  <h2>Active Projects</h2>
 
-  <h2>Building Your First Chemistry Simulation</h2>
-  <p>Here's the basic approach:</p>
-  
-  <h3>1. Physical Accuracy</h3>
-  <p>Model the actual physics: Coulomb's law for electron-nucleus interactions, angular momentum, quantum uncertainty. Libraries like <code>three.js</code> and <code>babylon.js</code> handle rendering; you implement physics.</p>
+  <div class="project-cards">
+    <div class="project-card">
+      <span class="project-card-icon">🔬</span>
+      <h4>Molecular Orbital Simulator</h4>
+      <p>Scrub through the periodic table and watch electron configurations change in real time. See orbital shapes — s, p, d, f — and understand reactivity at a glance.</p>
+    </div>
+    <div class="project-card">
+      <span class="project-card-icon">⚡</span>
+      <h4>Reaction Kinetics Engine</h4>
+      <p>Particles move with actual thermal velocity. Adjust temperature, watch collision rates change, see activation energy as a visible barrier. Real-time concentration graphs update as reactions proceed.</p>
+    </div>
+    <div class="project-card">
+      <span class="project-card-icon">🧬</span>
+      <h4>Protein Folding Viewer</h4>
+      <p>Loads actual protein data from PDB. Rotate, inspect active sites, apply mutations and see how a single amino acid change reshapes the folded structure.</p>
+    </div>
+  </div>
 
-  <h3>2. Interactivity</h3>
-  <p>Let users manipulate the system: adjust temperature, change atomic number, trigger reactions. Interactive education is far more effective than passive observation.</p>
+  <h2>Building a Chemistry Simulation: The Approach</h2>
 
-  <h3>3. Real-time Computation</h3>
-  <p>Use WebGL and GPU computation for fast physics updates. Simulating thousands of particles at 60fps requires optimization, but it's possible with modern browsers.</p>
+  <h3>Physical Accuracy First</h3>
+  <p>Model the real physics. Coulomb's law for electron–nucleus interactions. Angular momentum. Quantum uncertainty where it matters. Libraries like <code>three.js</code> and <code>babylon.js</code> handle rendering — your job is implementing the physics on top.</p>
 
-  <h3>4. Visual Feedback</h3>
-  <p>Color-code by energy level, use particle trails to show paths, highlight important interactions. Good visualization is half the learning.</p>
+  <h3>Interactivity Is the Point</h3>
+  <p>A simulation the user can only watch is just a video. The goal is manipulation: adjust temperature, change atomic number, trigger a reaction, apply a mutation. Passive observation produces passive learning. Interactive systems produce intuition.</p>
 
-  <h2>Current Projects</h2>
-  <p>I'm actively working on several simulations:</p>
+  <h3>GPU or Bust</h3>
+  <p>Simulating thousands of particles at 60fps in a browser requires the GPU. Use <code>WebGL</code> shaders for particle physics where possible. Offload heavy computation to <code>WebWorkers</code> to keep the main thread free. Implement level-of-detail (LOD) — not every particle needs full physics when it's off-screen or far from the camera.</p>
 
-  <h3>Molecular Orbital Simulator</h3>
-  <p>Visualizes how electrons fill orbitals as atomic number increases. Users can:</p>
-  <ul>
-    <li>Scrub through the periodic table</li>
-    <li>See electron configurations change</li>
-    <li>View orbital shapes (s, p, d, f)</li>
-    <li>Understand reactivity patterns</li>
-  </ul>
+  <h3>Visual Feedback Is Half the Learning</h3>
+  <p>Colour-code by energy level. Show particle trails so paths are visible. Highlight bond formation moments. Good visualisation isn't decoration — it's the difference between data and understanding.</p>
 
-  <h3>Reaction Kinetics Simulator</h3>
-  <p>Shows how temperature and concentration affect reaction rates:</p>
-  <ul>
-    <li>Particles move with thermal velocity</li>
-    <li>Collisions may or may not result in reaction</li>
-    <li>Activation energy visualized</li>
-    <li>Real-time graph of concentration over time</li>
-  </ul>
+  <h2>The Challenges That Aren't Obvious</h2>
 
-  <h3>Protein Folding Visualizer</h3>
-  <p>An ongoing project exploring how amino acid sequences fold into 3D structures. Uses:</p>
-  <ul>
-    <li>Actual protein data from PDB</li>
-    <li>Interactive rotation and inspection</li>
-    <li>Highlighting of active sites</li>
-    <li>Mutation viewer (see how SNPs affect folding)</li>
-  </ul>
-
-  <h2>The Challenges</h2>
-  
-  <h3>Performance</h3>
-  <p>Simulating thousands of particles with realistic physics is computationally expensive. Solutions: use WebWorkers for off-thread computation, implement LOD (level-of-detail), cache calculations.</p>
-
-  <h3>Accuracy vs. Simplicity</h3>
-  <p>Adding quantum effects improves accuracy but reduces visual clarity. We found a sweet spot: accurate enough to teach real concepts, simple enough to stay interactive.</p>
+  <h3>Accuracy vs. Clarity</h3>
+  <p>Full quantum accuracy makes things unintuitively complex. Full simplification makes them wrong. The sweet spot is: <em>accurate enough to teach real concepts, simple enough to remain interactive and readable</em>. Finding that balance for each simulation is a design problem as much as a technical one.</p>
 
   <h3>Scientific Validation</h3>
-  <p>Partnering with actual chemists ensures our simulations teach correct concepts. It's easy to build something pretty that's scientifically wrong.</p>
+  <p>It is very easy to build something visually compelling that is scientifically incorrect. The electron doesn't move in a circle. Bonds don't look like sticks. Every design decision that prioritises aesthetics over accuracy is a lesson taught wrong to someone. Working with actual chemists for review isn't optional — it's part of the build process.</p>
+
+  <h3>Performance on Real Devices</h3>
+  <p>A simulation that runs at 60fps on a MacBook may run at 8fps on a mid-range Android phone. Always profile on low-end hardware. Adaptive particle counts, frame-skip on slow devices, and WebP textures are not optimisations — they're requirements for reaching the students who need this most.</p>
 
   <h2>The Future of Science Education</h2>
-  <p>I firmly believe the future of STEM education is interactive, visual, and accessible. Consider:</p>
-  
-  <ul>
-    <li><strong>Virtual Labs:</strong> Why dissect frogs in high school when you can explore molecular interactions on your phone?</li>
-    <li><strong>AR Chemistry:</strong> Point your phone at a test tube and see molecular structures rendered in real space</li>
-    <li><strong>Collaborative Simulations:</strong> Multiple students building molecules in shared 3D space</li>
-    <li><strong>AI-Driven Learning:</strong> Simulations that adapt difficulty based on student understanding</li>
-  </ul>
+  <p>This is where it's going — and most of it is already possible with existing technology:</p>
+
+  <div class="future-grid">
+    <div class="future-card"><i class="fa-solid fa-flask-vial"></i><span>Virtual Labs</span></div>
+    <div class="future-card"><i class="fa-solid fa-vr-cardboard"></i><span>AR Chemistry</span></div>
+    <div class="future-card"><i class="fa-solid fa-users"></i><span>Collaborative Sims</span></div>
+    <div class="future-card"><i class="fa-solid fa-brain"></i><span>AI-Adaptive Learning</span></div>
+  </div>
+
+  <p>Students in rural schools with no lab access should have the same ability to explore molecular interactions as students at well-funded universities. That's not idealism — it's what a browser, a GPU, and a decent simulation make possible right now.</p>
 
   <h2>Getting Started</h2>
-  <p>If you're interested in building chemistry simulations:</p>
-  
-  <ol>
-    <li><strong>Learn Three.js or Babylon.js</strong> for 3D rendering</li>
-    <li><strong>Study Newton's laws and basic physics</strong> — you don't need quantum mechanics to start</li>
-    <li><strong>Find a chemistry dataset</strong> — PubChem, ChemSpider have free APIs</li>
-    <li><strong>Start small:</strong> Visualize molecular structures before simulating interactions</li>
-    <li><strong>Get feedback from chemists</strong> — accuracy matters</li>
-  </ol>
 
-  <h2>Open Source Opportunities</h2>
-  <p>The intersection of chemistry and software is wide open. Need help?</p>
-  
-  <ul>
-    <li><strong>Visualization Libraries:</strong> Open-source tools for molecular rendering</li>
-    <li><strong>Educational Platforms:</strong> Interactive courseware for chemistry learners</li>
-    <li><strong>Research Tools:</strong> Simulations for material science research</li>
-    <li><strong>VR Chemistry:</strong> Immersive lab experiences in virtual reality</li>
-  </ul>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-body"><h4>Learn Three.js or Babylon.js</h4><p>3D rendering in the browser. Start with the fundamentals: scenes, cameras, meshes, lighting. You don't need WebGL from scratch to build something useful.</p></div>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-body"><h4>Study basic physics</h4><p>Newton's laws and Coulomb's law will take you further than you think. You do not need quantum mechanics to build a compelling first simulation.</p></div>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-body"><h4>Find a dataset</h4><p>PubChem and ChemSpider have free APIs with molecular data. PDB has protein structures. Real data is more motivating than made-up examples.</p></div>
+    </div>
+    <div class="step">
+      <span class="step-num">04</span>
+      <div class="step-body"><h4>Start smaller than you think</h4><p>Visualise a single molecule rotating before you simulate a reaction. Render a static orbital before you animate electron transitions. Ship something real.</p></div>
+    </div>
+    <div class="step">
+      <span class="step-num">05</span>
+      <div class="step-body"><h4>Get a chemist to review it</h4><p>Find someone who knows the science and ask them to break your simulation. They will. Fix it. Repeat.</p></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
 
   <h2>Closing Thoughts</h2>
-  <p>Combining chemistry with software isn't just academically interesting — <strong>it's where innovation happens.</strong> The next generation of batteries, drugs, and materials will be developed by people who understand both the science and the software.</p>
+  <p>The intersection of chemistry and software isn't a niche — it's where some of the most important work of the next decade will happen. The next generation of batteries, drugs, and materials will be built by people who understand both the underlying science <em>and</em> the tools to model it.</p>
 
-  <p>If you're passionate about both fields, this is your moment. The tools are better than ever, the need is critical, and the possibilities are endless.</p>
+  <p>If you're building in this space or want to talk simulations, architecture, or just how to get started — <a href="../index.html#contact">reach out</a>. I actually reply.</p>
 
-  <div class="blog-nav">
-    <a href="../#blog">← Back to Blog</a>
-    <a href="../#contact">Get in Touch →</a>
+  <div class="post-nav">
+    <a href="../index.html#blog"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All Posts</a>
+    <a href="../index.html#contact">Get in Touch <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
   </div>
+
 </article>
 
-<footer role="contentinfo" style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 183, 197, 0.1); margin-top: 80px; color: #7a6090;">
-  <p>© 2024 DoanHoang · Made with <i class="fa-solid fa-heart" style="color: #ffb7c5;"></i></p>
+<footer>
+  <p>© <span id="yr"></span> <span>Nguyễn Doãn Hoàng</span> · Made with 🌸 in Vietnam</p>
 </footer>
 
-<script src="../js/main.js" defer></script>
+<script>
+  const sp = document.getElementById('sp');
+  window.addEventListener('scroll', () => {
+    if (sp) sp.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+  }, { passive: true });
+
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav?.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
